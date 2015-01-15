@@ -2,6 +2,9 @@ package com.example.so.testapp;
 
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -18,7 +21,7 @@ public class SurfaceAnimation extends SurfaceView
 
     static final long FPS = 20;
     static final long FRAME_TIME = 1000 / FPS;
-    static final int BALL_R = 30;
+    static final int BALL_R = MainActivity.percentHeight(7);
     SurfaceHolder surfaceHolder;
     Thread thread;
     int cx = BALL_R, cy = BALL_R;
@@ -27,7 +30,13 @@ public class SurfaceAnimation extends SurfaceView
     //点線用エフェクト
     private DashPathEffect lineeffect;
     private Paint mDotPaint;
-    private float froX , froY,toX,toY,phase = 0,rad = 0;
+    private float froX , froY,toX,toY,phase = 0,rad = 0,scale = 0;
+
+    //画像のサイズ
+    private Bitmap bmp;
+    private int bmphei;
+    private int bmpwid;
+    private int deg;
 
     public SurfaceAnimation(Context context) {
         super(context);
@@ -40,6 +49,15 @@ public class SurfaceAnimation extends SurfaceView
         this.toY = MainActivity.percentHeight(20);
         this.phase = 0;
         this.rad = 0;
+        this.scale = 0.1f;
+        this.deg = 0;
+
+        //画像読み込み
+        Resources res = this.getContext().getResources();
+        bmp = BitmapFactory.decodeResource(res, R.drawable.ic_launcher);
+        bmphei = bmp.getHeight();
+        bmpwid = bmp.getWidth();
+
 
     }
 
@@ -50,12 +68,18 @@ public class SurfaceAnimation extends SurfaceView
         Paint paint = new Paint();
         Paint bgPaint = new Paint();
 
+
+
         // Background
         bgPaint.setStyle(Paint.Style.FILL);
         bgPaint.setColor(Color.WHITE);
         // Ball
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLUE);
+
+        //画像
+        Paint bmppaint = new Paint();
+        bmppaint.setFilterBitmap(true);
 
         //点線
         mDotPaint = new Paint();
@@ -73,6 +97,7 @@ public class SurfaceAnimation extends SurfaceView
         circle.setColor(Color.RED);
 
 
+
         long loopCount = 0;
         long waitTime = 0;
         long startTime = System.currentTimeMillis();
@@ -88,14 +113,25 @@ public class SurfaceAnimation extends SurfaceView
 
                 phase++;
                 rad = rad +2;
+                scale = scale + 0.025f;
 
                 //透明色で前回の描画を消す
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
                 //玉の描画
+                canvas.save();
+                canvas.scale(scale, scale, MainActivity.percentHeight(20), MainActivity.percentHeight(30));
                 canvas.drawCircle(
-                        cx++, cy++, BALL_R,
+                        MainActivity.percentHeight(20), MainActivity.percentHeight(30), BALL_R,
                         paint);
+                canvas.restore();
+
+                //画像のアニメーション
+                canvas.save();
+                canvas.rotate(deg++
+                        ,MainActivity.percentWidth(5)+(bmpwid/2), MainActivity.percentHeight(42)+(bmphei/2));
+                canvas.drawBitmap(bmp,MainActivity.percentWidth(5), MainActivity.percentHeight(42), bmppaint);
+                canvas.restore();
 
                 //円の描画
                 canvas.drawCircle(
@@ -138,6 +174,12 @@ public class SurfaceAnimation extends SurfaceView
                 }
                 if (rad>100){
                     rad = 0;
+                }
+                if (scale>1){
+                    scale = 0;
+                }
+                if(deg>360){
+                    deg = 0;
                 }
 
                 if( waitTime > 0 ){

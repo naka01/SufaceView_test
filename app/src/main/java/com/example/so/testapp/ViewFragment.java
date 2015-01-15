@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.view.WindowManager.LayoutParams;
 
@@ -83,9 +84,16 @@ public class ViewFragment extends Fragment {
             }
         });
 
+        //Framelayout
+        FrameLayout frameLayout = new FrameLayout(context);
+        param = new RelativeLayout.LayoutParams(MP, MP);
+        param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        param.addRule(RelativeLayout.BELOW,R.id.layout_vf1);
+        relativeLayout_main.addView(frameLayout,param);
+
 
         surfaceanim = new SurfaceAnimation(context);
-        surfaceanim.setOnTouchListener(new View.OnTouchListener() {
+        /*surfaceanim.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 //Log.d("TouchEvent", "X:" + event.getX() + ",Y:" + event.getY());
@@ -106,12 +114,10 @@ public class ViewFragment extends Fragment {
                 }
                 return true;
             }
-        });
+        });*/
+        frameLayout.addView(surfaceanim, new ViewGroup.LayoutParams(MP,MP));
 
-        param = new RelativeLayout.LayoutParams(MP, MP);
-        param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        param.addRule(RelativeLayout.BELOW,R.id.layout_vf1);
-        relativeLayout_main.addView(surfaceanim,param);
+
 
         return relativeLayout_main;
     }
