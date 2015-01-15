@@ -26,7 +26,6 @@ public class SurfaceAnimation extends SurfaceView
 
     //点線用エフェクト
     private DashPathEffect lineeffect;
-    private PathEffect effect;
     private Paint mDotPaint;
     private float froX , froY,toX,toY,phase = 0,rad = 0;
 
@@ -35,10 +34,10 @@ public class SurfaceAnimation extends SurfaceView
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
 
-        this.froX = 10;
-        this.froY = 10;
-        this.toX = 400;
-        this.toY = 700;
+        this.froX = MainActivity.percentWidth(5);
+        this.froY = MainActivity.percentHeight(20);
+        this.toX = MainActivity.percentWidth(95);
+        this.toY = MainActivity.percentHeight(20);
         this.phase = 0;
         this.rad = 0;
 
@@ -79,61 +78,48 @@ public class SurfaceAnimation extends SurfaceView
         long startTime = System.currentTimeMillis();
 
 
-
-
-
-        //玉の描画
-        /*while(thread != null){
-
-            try{
-                loopCount++;
-                canvas = surfaceHolder.lockCanvas();
-
-
-                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-
-                canvas.drawCircle(
-                        cx++, cy++, BALL_R,
-                        paint);
-
-                surfaceHolder.unlockCanvasAndPost(canvas);
-
-                waitTime = (loopCount * FRAME_TIME)
-                        - (System.currentTimeMillis() - startTime);
-
-                if( waitTime > 0 ){
-                    Thread.sleep(waitTime);
-                }
-            }
-            catch(Exception e){}
-        }*/
-
-
-        //点線の描画
+        //アニメーション用のループ
         while(thread != null) {
 
 
             try {
                 loopCount++;
-                invalidate();
                 canvas = surfaceHolder.lockCanvas();
 
                 phase++;
                 rad = rad +2;
-                Log.v("log", String.format("phase: %s", phase));
 
+                //透明色で前回の描画を消す
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+
+                //玉の描画
+                canvas.drawCircle(
+                        cx++, cy++, BALL_R,
+                        paint);
+
+                //円の描画
                 canvas.drawCircle(
                         toX, toY, rad,
                         circle);
 
+                //点線の描画
                 lineeffect = new DashPathEffect(new float[]{20.0f, 10.0f}, phase);
 
                 mDotPaint.setPathEffect(lineeffect); // 5pixel描いたら5pixel描かないを繰り返す
                 Path mPath = new Path();
 
                 mPath.moveTo(froX, froY);
-                mPath.quadTo(froX, froY, toX, toY);
+                mPath.quadTo(MainActivity.percentWidth(15),MainActivity.percentHeight(5)
+                        ,MainActivity.percentWidth(25),MainActivity.percentHeight(20));
+                mPath.moveTo(MainActivity.percentWidth(25),MainActivity.percentHeight(20));
+                mPath.quadTo(MainActivity.percentWidth(45),MainActivity.percentHeight(5)
+                        , MainActivity.percentWidth(65),MainActivity.percentHeight(20));
+                mPath.moveTo(MainActivity.percentWidth(65),MainActivity.percentHeight(20));
+
+                //Log.v("log", String.format("MainActivity.percentWidth(80): %s", MainActivity.percentWidth(80)));
+                mPath.quadTo(MainActivity.percentWidth(80),MainActivity.percentHeight(5)
+                        , toX, toY);
+
 
                 canvas.drawPath(mPath, mDotPaint);
 

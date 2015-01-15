@@ -3,9 +3,11 @@ package com.example.so.testapp;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.Point;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -14,6 +16,10 @@ import android.widget.RelativeLayout;
 public class MainActivity extends ActionBarActivity {
 
     private FragmentManager manager;
+
+    //画面サイズ
+    private static int g_wi;
+    private static int g_hi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,30 +72,26 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        //画面サイズ取得
+        Display disp = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        disp.getSize(size);
+        g_wi = size.x;
+        g_hi = size.y;
+
     }
 
 
-    //メニュー
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }*/
+    //画面サイズ取得
+    public static int percentHeight(int in){
+        float per = (float)in / 100f;
+        return (int) (g_hi*per);
+    }
 
-    //セッティング
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public static int percentWidth(int in){
+        float per = (float)in / 100f;
+        return (int) (g_wi*per);
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
-    }*/
 }

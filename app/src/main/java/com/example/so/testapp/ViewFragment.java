@@ -25,6 +25,9 @@ public class ViewFragment extends Fragment {
     private FragmentManager manager;
     private SurfaceAnimation surfaceanim;
 
+    private final int BS = 100;
+    private final int MB = 20;
+
     public static ViewFragment newInstance(int index) {
         ViewFragment fragment = new ViewFragment();
 
@@ -51,8 +54,8 @@ public class ViewFragment extends Fragment {
         Button button = new Button(context);
         button.setId(R.id.layout_vf1);
         button.setText("back");
-        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(200,200);
-        param.setMargins(50,50,50,50);
+        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(BS,BS);
+        param.setMargins(MB,MB,MB,MB);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         relativeLayout_main.addView(button, param);
 
@@ -67,8 +70,8 @@ public class ViewFragment extends Fragment {
         button = new Button(context);
         button.setId(R.id.layout_vf2);
         button.setText("CP");
-        param = new RelativeLayout.LayoutParams(200,200);
-        param.setMargins(50,50,50,50);
+        param = new RelativeLayout.LayoutParams(BS,BS);
+        param.setMargins(MB,MB,MB,MB);
         param.addRule(RelativeLayout.LEFT_OF,R.id.layout_vf1);
         relativeLayout_main.addView(button, param);
 
@@ -122,9 +125,6 @@ public class ViewFragment extends Fragment {
             mData = savedInstanceState.getInt("data");
         }
 
-        // 引数を取得
-        /*Bundle args = getArguments();
-        int index = args.getInt("index");*/
 
 
     }
