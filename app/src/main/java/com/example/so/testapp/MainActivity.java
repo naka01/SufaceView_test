@@ -1,8 +1,11 @@
 package com.example.so.testapp;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -21,6 +24,8 @@ public class MainActivity extends ActionBarActivity {
     private static int g_wi;
     private static int g_hi;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
         RelativeLayout baseview = (RelativeLayout)this.getLayoutInflater().inflate(R.layout.activity_main,null);
 
         RelativeLayout contentview = (RelativeLayout)baseview.findViewById(R.id.mainview);
-        Log.v("log", String.format("contentview: %s", contentview));
+
         Button button = new Button(this);
         button.setId(R.id.layout1);
         button.setText("cam");
@@ -44,6 +49,7 @@ public class MainActivity extends ActionBarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //saveBtnF(getApplicationContext());
                 Intent intent = new Intent(MainActivity.this,SubActivity.class);
                 startActivity(intent);
             }
@@ -64,6 +70,9 @@ public class MainActivity extends ActionBarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*boolean tes = loadBtn(getApplicationContext());
+                Log.v("log", String.format("tes",tes));
+                test(getApplicationContext());*/
                 FragmentTransaction transaction = manager.beginTransaction();
                 ViewFragment fragment = new ViewFragment();
                 transaction.add(R.id.fragtar,fragment );
@@ -81,6 +90,10 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    @Override
+    public void onAttachFragment(Fragment fra){
+        Log.v("log", "onAttachFragment");
+    }
 
     //画面サイズ取得
     public static int percentHeight(int in){

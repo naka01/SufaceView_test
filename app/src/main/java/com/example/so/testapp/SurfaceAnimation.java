@@ -72,7 +72,7 @@ public class SurfaceAnimation extends SurfaceView
         Paint paint = new Paint();
         Paint bgPaint = new Paint();
 
-
+        paint.setAntiAlias(true);
 
         // Background
         bgPaint.setStyle(Paint.Style.FILL);
@@ -83,12 +83,14 @@ public class SurfaceAnimation extends SurfaceView
 
         //画像
         Paint bmppaint = new Paint();
+        bmppaint.setAntiAlias(true);
         bmppaint.setFilterBitmap(true);
 
 
 
         //点線
         mDotPaint = new Paint();
+        mDotPaint.setAntiAlias(true);
         lineeffect = new DashPathEffect(new float[]{20.0f, 10.0f}, phase);
 
         mDotPaint.setPathEffect(lineeffect); // 5pixel描いたら5pixel描かないを繰り返す
@@ -98,6 +100,7 @@ public class SurfaceAnimation extends SurfaceView
 
         //円
         Paint circle = new Paint();
+        circle.setAntiAlias(true);
         circle.setStyle(Paint.Style.STROKE);
         circle.setStrokeWidth(8);
         circle.setColor(Color.RED);
@@ -220,8 +223,7 @@ public class SurfaceAnimation extends SurfaceView
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                bx = event.getX();
-                by = event.getY();
+
                 hit = false;
 
                 break;
@@ -231,15 +233,14 @@ public class SurfaceAnimation extends SurfaceView
                     graphicobj.x = graphicobj.x + (cx - bx);
                     graphicobj.y = graphicobj.y + (cy - by);
                 }
-                bx = event.getX();
-                by = event.getY();
                 break;
             case MotionEvent.ACTION_CANCEL:
-                bx = event.getX();
-                by = event.getY();
                 hit = false;
                 break;
         }
+
+        bx = event.getX();
+        by = event.getY();
         return true;
     }
 
