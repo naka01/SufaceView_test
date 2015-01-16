@@ -13,6 +13,7 @@ import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.PorterDuff;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -33,10 +34,15 @@ public class SurfaceAnimation extends SurfaceView
     private float froX , froY,toX,toY,phase = 0,rad = 0,scale = 0;
 
     //画像のサイズ
-    private Bitmap bmp;
+    /*private Bitmap bmp;
     private int bmphei;
-    private int bmpwid;
+    private int bmpwid;*/
     private int deg;
+    private GraphicObj graphicobj;
+
+    private boolean hit = false; //タッチ判定
+    float bx;   //座標
+    float by;
 
     public SurfaceAnimation(Context context) {
         super(context);
@@ -53,10 +59,8 @@ public class SurfaceAnimation extends SurfaceView
         this.deg = 0;
 
         //画像読み込み
-        Resources res = this.getContext().getResources();
-        bmp = BitmapFactory.decodeResource(res, R.drawable.ic_launcher);
-        bmphei = bmp.getHeight();
-        bmpwid = bmp.getWidth();
+        graphicobj = new GraphicObj(context,R.drawable.ic_launcher
+                ,(float)MainActivity.percentWidth(5), (float)MainActivity.percentHeight(42));
 
 
     }
@@ -80,6 +84,8 @@ public class SurfaceAnimation extends SurfaceView
         //画像
         Paint bmppaint = new Paint();
         bmppaint.setFilterBitmap(true);
+
+
 
         //点線
         mDotPaint = new Paint();
@@ -129,8 +135,9 @@ public class SurfaceAnimation extends SurfaceView
                 //画像のアニメーション
                 canvas.save();
                 canvas.rotate(deg++
-                        ,MainActivity.percentWidth(5)+(bmpwid/2), MainActivity.percentHeight(42)+(bmphei/2));
-                canvas.drawBitmap(bmp,MainActivity.percentWidth(5), MainActivity.percentHeight(42), bmppaint);
+                        ,graphicobj.x+(graphicobj.getbmpwid()/2)
+                        ,graphicobj.y+(graphicobj.getbmphei()/2));
+                canvas.drawBitmap(graphicobj.getbmp(),graphicobj.x,graphicobj.y, bmppaint);
                 canvas.restore();
 
                 //円の描画
@@ -193,6 +200,47 @@ public class SurfaceAnimation extends SurfaceView
 
 
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        //現在のタッチ座標
+        float cx = event.getX();
+        float cy = event.getY();
+
+        switch (event.getAction()) {
+
+            case MotionEvent.ACTION_DOWN:
+                bx = event.getX();
+                by = event.getY();
+                if((graphicobj.x-bx)*(graphicobj.x-bx) + (graphicobj.y-by)*(graphicobj.y-by)
+                        < graphicobj.radius*graphicobj.radius){
+                    Log.v("log", "hit");
+                    hit = true;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                bx = event.getX();
+                by = event.getY();
+                hit = false;
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if(hit){
+                    Log.v("log", String.format("move: %s", graphicobj.x));
+                    graphicobj.x = graphicobj.x + (cx - bx);
+                    graphicobj.y = graphicobj.y + (cy - by);
+                }
+                bx = event.getX();
+                by = event.getY();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                bx = event.getX();
+                by = event.getY();
+                hit = false;
+                break;
+        }
+        return true;
     }
 
     public void topointChange(int toX, int toY){
