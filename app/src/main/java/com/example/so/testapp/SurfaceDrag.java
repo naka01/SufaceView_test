@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -20,10 +21,8 @@ public class SurfaceDrag extends SurfaceView
 
     static final long FPS = 60;
     static final long FRAME_TIME = 1000 / FPS;
-    //static final int BALL_R = MainActivity.percentHeight(7);
     SurfaceHolder surfaceHolder;
     Thread thread;
-    //int cx = BALL_R, cy = BALL_R;
     int screen_width, screen_height;
 
     //画像のサイズ
@@ -51,6 +50,9 @@ public class SurfaceDrag extends SurfaceView
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
 
+        // 半透明を設定
+        surfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
+        setZOrderOnTop(true);
         this.deg = 0;
 
         //画像読み込み

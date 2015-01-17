@@ -107,6 +107,32 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        button = new Button(this);
+        button.setId(R.id.layout4);
+        button.setText("Texture");
+        param = new RelativeLayout.LayoutParams(200,100);
+        param.setMargins(50,50,50,50);
+        param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        param.addRule(RelativeLayout.BELOW,R.id.layout3);
+        contentview.addView(button, param);
+
+
+        setContentView(baseview);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*boolean tes = loadBtn(getApplicationContext());
+                Log.v("log", String.format("tes",tes));
+                test(getApplicationContext());*/
+                FragmentTransaction transaction = manager.beginTransaction();
+                TextureFragment fragment = new TextureFragment();
+                transaction.add(R.id.fragtar,fragment );
+                transaction.addToBackStack(null);//前のfragmentへもどるのに必要
+                transaction.commit();
+            }
+        });
+
         //画面サイズ取得
         Display disp = getWindowManager().getDefaultDisplay();
         Point size = new Point();

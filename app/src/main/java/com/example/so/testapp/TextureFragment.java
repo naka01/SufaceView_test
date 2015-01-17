@@ -1,12 +1,10 @@
 package com.example.so.testapp;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +12,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-
-
-public class ViewMultiDrag extends Fragment {
+public class TextureFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -33,7 +28,7 @@ public class ViewMultiDrag extends Fragment {
 
     private final int MP = WindowManager.LayoutParams.MATCH_PARENT;
     private FragmentManager manager;
-    private SurfaceDrag surfacedrag;
+    private TextureAnimation textureanim;
 
     private final int BS = 100;
     private final int MB = 20;
@@ -58,7 +53,7 @@ public class ViewMultiDrag extends Fragment {
         return fragment;
     }
 
-    public ViewMultiDrag() {
+    public TextureFragment() {
         // Required empty public constructor
     }
 
@@ -109,9 +104,9 @@ public class ViewMultiDrag extends Fragment {
         relativeLayout_main.addView(frameLayout,param);
 
 
-        surfacedrag = new SurfaceDrag(context);
+        textureanim = new TextureAnimation(context);
 
-        frameLayout.addView(surfacedrag, new ViewGroup.LayoutParams(MP,MP));
+        frameLayout.addView(textureanim, new ViewGroup.LayoutParams(MP,MP));
 
 
 
