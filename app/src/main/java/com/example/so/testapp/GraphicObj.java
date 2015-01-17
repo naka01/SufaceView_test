@@ -29,6 +29,18 @@ public class GraphicObj {
         this.radius = Math.max(bmphei,bmpwid);
     }
 
+    //タッチ可能領域とタッチ判定
+    public boolean graphicOnTouch(float cx ,float cy){
+        return (this.x-cx)*(this.x-cx) + (this.y-cy)*(this.y-cy)
+                < this.radius*this.radius;
+    }
+
+    //移動
+    public void movebmp(float cx ,float cy){
+        x = x + cx;
+        y = y + cy;
+    }
+
     //getter
     public Bitmap getbmp(){
         return bmp;

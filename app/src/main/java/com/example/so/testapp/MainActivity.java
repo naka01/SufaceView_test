@@ -39,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
         Button button = new Button(this);
         button.setId(R.id.layout1);
         button.setText("cam");
-        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(200,200);
+        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(200,100);
         param.setMargins(50,50,50,50);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         contentview.addView(button,param);
@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
         button = new Button(this);
         button.setId(R.id.layout2);
         button.setText("surfaceView");
-        param = new RelativeLayout.LayoutParams(200,200);
+        param = new RelativeLayout.LayoutParams(200,100);
         param.setMargins(50,50,50,50);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         param.addRule(RelativeLayout.BELOW,R.id.layout1);
@@ -75,6 +75,32 @@ public class MainActivity extends ActionBarActivity {
                 test(getApplicationContext());*/
                 FragmentTransaction transaction = manager.beginTransaction();
                 ViewFragment fragment = new ViewFragment();
+                transaction.add(R.id.fragtar,fragment );
+                transaction.addToBackStack(null);//前のfragmentへもどるのに必要
+                transaction.commit();
+            }
+        });
+
+        button = new Button(this);
+        button.setId(R.id.layout3);
+        button.setText("MultiDrag");
+        param = new RelativeLayout.LayoutParams(200,100);
+        param.setMargins(50,50,50,50);
+        param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        param.addRule(RelativeLayout.BELOW,R.id.layout2);
+        contentview.addView(button, param);
+
+
+        setContentView(baseview);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*boolean tes = loadBtn(getApplicationContext());
+                Log.v("log", String.format("tes",tes));
+                test(getApplicationContext());*/
+                FragmentTransaction transaction = manager.beginTransaction();
+                ViewMultiDrag fragment = new ViewMultiDrag();
                 transaction.add(R.id.fragtar,fragment );
                 transaction.addToBackStack(null);//前のfragmentへもどるのに必要
                 transaction.commit();

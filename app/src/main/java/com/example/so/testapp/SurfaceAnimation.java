@@ -34,9 +34,6 @@ public class SurfaceAnimation extends SurfaceView
     private float froX , froY,toX,toY,phase = 0,rad = 0,scale = 0;
 
     //画像のサイズ
-    /*private Bitmap bmp;
-    private int bmphei;
-    private int bmpwid;*/
     private int deg;
     private GraphicObj graphicobj;
 
@@ -214,10 +211,9 @@ public class SurfaceAnimation extends SurfaceView
         switch (event.getAction()) {
 
             case MotionEvent.ACTION_DOWN:
-                bx = event.getX();
-                by = event.getY();
-                if((graphicobj.x-bx)*(graphicobj.x-bx) + (graphicobj.y-by)*(graphicobj.y-by)
-                        < graphicobj.radius*graphicobj.radius){
+                bx = cx;
+                by = cy;
+                if(graphicobj.graphicOnTouch(bx,by)){
                     Log.v("log", "hit");
                     hit = true;
                 }
@@ -229,7 +225,7 @@ public class SurfaceAnimation extends SurfaceView
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(hit){
-                    Log.v("log", String.format("move: %s", graphicobj.x));
+                    //Log.v("log", String.format("move: %s", graphicobj.x));
                     graphicobj.x = graphicobj.x + (cx - bx);
                     graphicobj.y = graphicobj.y + (cy - by);
                 }
@@ -239,8 +235,8 @@ public class SurfaceAnimation extends SurfaceView
                 break;
         }
 
-        bx = event.getX();
-        by = event.getY();
+        bx = cx;
+        by = cy;
         return true;
     }
 

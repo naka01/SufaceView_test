@@ -3,6 +3,7 @@
     <item type="id" name="layout1" />
     <item type="id" name="layout2" />
     <item type="id" name="layout3" />
+    <item type="id" name="layout4" />
     <item type="id" name="layout_vf1" />
     <item type="id" name="layout_vf2" />
 </resources>
