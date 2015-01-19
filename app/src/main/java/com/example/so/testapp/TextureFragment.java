@@ -19,9 +19,6 @@ public class TextureFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     /** Fragmentで保持しておくデータ */
     private Context context;
@@ -29,6 +26,7 @@ public class TextureFragment extends Fragment {
     private final int MP = WindowManager.LayoutParams.MATCH_PARENT;
     private FragmentManager manager;
     private TextureAnimation textureanim;
+    private TextureGraphic texturegraphic;
 
     private final int BS = 100;
     private final int MB = 20;
@@ -61,14 +59,16 @@ public class TextureFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //bundle
+        int page = getArguments().getInt("page",1);
+
         // FragmentのViewを返却
         context = getActivity().getApplicationContext();
         manager = getFragmentManager();
@@ -103,12 +103,13 @@ public class TextureFragment extends Fragment {
         param.addRule(RelativeLayout.BELOW,R.id.layout_vf1);
         relativeLayout_main.addView(frameLayout,param);
 
-
-        textureanim = new TextureAnimation(context);
-
-        frameLayout.addView(textureanim, new ViewGroup.LayoutParams(MP,MP));
-
-
+        if(page == 1) {
+            textureanim = new TextureAnimation(context);
+            frameLayout.addView(textureanim, new ViewGroup.LayoutParams(MP, MP));
+        }else{
+            texturegraphic = new TextureGraphic(context);
+            frameLayout.addView(texturegraphic, new ViewGroup.LayoutParams(MP, MP));
+        }
 
         return relativeLayout_main;
     }

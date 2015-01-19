@@ -6,23 +6,28 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.SurfaceTexture;
-import android.util.Log;
 import android.view.TextureView;
 
-
-public class TextureAnimation extends TextureView  implements TextureView.SurfaceTextureListener,Runnable{
+public class TextureGraphic extends TextureView implements TextureView.SurfaceTextureListener,Runnable{
 
 
     static final long FPS = 60;
     static final long FRAME_TIME = 1000 / FPS;
-    static final int BALL_R = MainActivity.percentHeight(7);
     Thread thread;
 
-    private float scale;
 
-    public TextureAnimation(Context context){
+    //画像のデータ
+    private int deg;
+    private GraphicObj graphicobj;
+
+    public TextureGraphic(Context context){
         super(context);
         setSurfaceTextureListener(this);
+
+        this.deg = 0;
+
+        //画像読み込み
+        graphicobj = new GraphicObj(context,R.drawable.ic_launcher,30, 100);
     }
 
 
@@ -35,6 +40,7 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         thread=null;
+        graphicobj = null;
         return false;
     }
 
@@ -58,18 +64,11 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
 
         //アニメーション用のループ
         while (thread != null) {
-            Paint paint = new Paint();
-            Paint bgPaint = new Paint();
 
-            paint.setAntiAlias(true);
-
-            // Background
-            bgPaint.setStyle(Paint.Style.FILL);
-            bgPaint.setColor(Color.WHITE);
-            // Ball
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.BLUE);
-
+            //画像
+            Paint bmppaint = new Paint();
+            bmppaint.setAntiAlias(true);
+            bmppaint.setFilterBitmap(true);
 
 
             //アニメーション用のループ
@@ -80,18 +79,18 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
                     loopCount++;
                     canvas = this.lockCanvas();
 
-                    scale = scale + 0.025f;
 
                     //透明色で前回の描画を消す
                     canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-                    //玉の描画
+                    //画像のアニメーション
                     canvas.save();
-                    canvas.scale(scale, scale, MainActivity.percentHeight(20), MainActivity.percentHeight(30));
-                    canvas.drawCircle(
-                            MainActivity.percentHeight(20), MainActivity.percentHeight(30), BALL_R,
-                            paint);
+                    canvas.rotate(deg++
+                            ,graphicobj.x+(graphicobj.getbmpwid()/2)
+                            ,graphicobj.y+(graphicobj.getbmphei()/2));
+                    canvas.drawBitmap(graphicobj.getbmp(),graphicobj.x,graphicobj.y, bmppaint);
                     canvas.restore();
+
 
 
 
@@ -101,10 +100,9 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
                     waitTime = (loopCount * FRAME_TIME)
                             - (System.currentTimeMillis() - startTime);
 
-                    if (scale > 1) {
-                        scale = 0;
+                    if(deg>360){
+                        deg = 0;
                     }
-
 
                     if (waitTime > 0) {
                         Thread.sleep(waitTime);

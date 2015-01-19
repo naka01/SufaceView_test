@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
@@ -24,7 +25,9 @@ public class MainActivity extends ActionBarActivity {
     private static int g_wi;
     private static int g_hi;
 
-
+    //ボタンサイズ
+    private int B_wi = 300;
+    private int B_hi = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +42,8 @@ public class MainActivity extends ActionBarActivity {
         Button button = new Button(this);
         button.setId(R.id.layout1);
         button.setText("cam");
-        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(200,100);
-        param.setMargins(50,50,50,50);
+        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20, 20, 50, 0);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         contentview.addView(button,param);
 
@@ -58,8 +61,8 @@ public class MainActivity extends ActionBarActivity {
         button = new Button(this);
         button.setId(R.id.layout2);
         button.setText("surfaceView");
-        param = new RelativeLayout.LayoutParams(200,100);
-        param.setMargins(50,50,50,50);
+        param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20,20,50,0);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         param.addRule(RelativeLayout.BELOW,R.id.layout1);
         contentview.addView(button, param);
@@ -84,8 +87,8 @@ public class MainActivity extends ActionBarActivity {
         button = new Button(this);
         button.setId(R.id.layout3);
         button.setText("MultiDrag");
-        param = new RelativeLayout.LayoutParams(200,100);
-        param.setMargins(50,50,50,50);
+        param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20,20,50,0);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         param.addRule(RelativeLayout.BELOW,R.id.layout2);
         contentview.addView(button, param);
@@ -110,8 +113,8 @@ public class MainActivity extends ActionBarActivity {
         button = new Button(this);
         button.setId(R.id.layout4);
         button.setText("Texture");
-        param = new RelativeLayout.LayoutParams(200,100);
-        param.setMargins(50,50,50,50);
+        param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20,20,50,0);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         param.addRule(RelativeLayout.BELOW,R.id.layout3);
         contentview.addView(button, param);
@@ -126,12 +129,45 @@ public class MainActivity extends ActionBarActivity {
                 Log.v("log", String.format("tes",tes));
                 test(getApplicationContext());*/
                 FragmentTransaction transaction = manager.beginTransaction();
+                Bundle arg = new Bundle();
+                arg.putInt("page",1);
                 TextureFragment fragment = new TextureFragment();
+                fragment.setArguments(arg);
                 transaction.add(R.id.fragtar,fragment );
                 transaction.addToBackStack(null);//前のfragmentへもどるのに必要
                 transaction.commit();
             }
         });
+
+        button = new Button(this);
+        button.setId(R.id.layout5);
+        button.setText("Texture Gra");
+        param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20,20,50,0);
+        param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        param.addRule(RelativeLayout.BELOW,R.id.layout4);
+        contentview.addView(button, param);
+
+
+        setContentView(baseview);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*boolean tes = loadBtn(getApplicationContext());
+                Log.v("log", String.format("tes",tes));
+                test(getApplicationContext());*/
+                FragmentTransaction transaction = manager.beginTransaction();
+                Bundle arg = new Bundle();
+                arg.putInt("page",2);
+                TextureFragment fragment = new TextureFragment();
+                fragment.setArguments(arg);
+                transaction.add(R.id.fragtar,fragment );
+                transaction.addToBackStack(null);//前のfragmentへもどるのに必要
+                transaction.commit();
+            }
+        });
+
 
         //画面サイズ取得
         Display disp = getWindowManager().getDefaultDisplay();
@@ -149,7 +185,7 @@ public class MainActivity extends ActionBarActivity {
 
     //画面サイズ取得
     public static int percentHeight(int in){
-        float per = (float)in / 100f;
+        float per = (float)in /100f;
         return (int) (g_hi*per);
     }
 
