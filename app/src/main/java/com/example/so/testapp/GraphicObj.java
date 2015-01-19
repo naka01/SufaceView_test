@@ -54,4 +54,10 @@ public class GraphicObj {
         return bmpwid;
     }
 
+    //リリース
+    public void release(){
+        this.bmp.recycle();
+        this.bmp = null;
+    }
+
 }

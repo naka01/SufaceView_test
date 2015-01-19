@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,31 +26,12 @@ public class TextureFragment extends Fragment {
 
     private final int MP = WindowManager.LayoutParams.MATCH_PARENT;
     private FragmentManager manager;
-    private TextureAnimation textureanim;
-    private TextureGraphic texturegraphic;
+    private TextureAnimation textureanim = null;
+    private TextureGraphic texturegraphic = null;
 
     private final int BS = 100;
     private final int MB = 20;
 
-
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ViewMultiDrag.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ViewMultiDrag newInstance(String param1, String param2) {
-        ViewMultiDrag fragment = new ViewMultiDrag();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     public TextureFragment() {
         // Required empty public constructor
@@ -112,6 +94,15 @@ public class TextureFragment extends Fragment {
         }
 
         return relativeLayout_main;
+    }
+
+    @Override
+    public void onDestroy() {
+        //画像解放
+        Log.v("log", "Texture fragment Destroy:");
+        //textureanim = null;
+        //texturegraphic = null;
+        super.onDestroy();
     }
 
 

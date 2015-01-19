@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.SurfaceTexture;
+import android.util.Log;
 import android.view.TextureView;
 
 public class TextureGraphic extends TextureView implements TextureView.SurfaceTextureListener,Runnable{
@@ -39,8 +40,10 @@ public class TextureGraphic extends TextureView implements TextureView.SurfaceTe
     }
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        Log.v("log", "TextureView Destroy:");
         thread=null;
-        graphicobj = null;
+        /*graphicobj.release();
+        graphicobj = null;*/
         return false;
     }
 
