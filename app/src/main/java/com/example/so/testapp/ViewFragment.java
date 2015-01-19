@@ -30,17 +30,6 @@ public class ViewFragment extends Fragment {
     private final int BS = 100;
     private final int MB = 20;
 
-    public static ViewFragment newInstance(int index) {
-        ViewFragment fragment = new ViewFragment();
-
-        // 引数を設定
-        Bundle args = new Bundle();
-        args.putInt("index", index);
-        fragment.setArguments(args);
-
-        return fragment;
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -124,6 +113,7 @@ public class ViewFragment extends Fragment {
         return relativeLayout_main;
     }
 
+/*
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -143,5 +133,6 @@ public class ViewFragment extends Fragment {
         // Fragment内で残しておきたいデータを保存
         outState.putInt("data", mData);
     }
+*/
 
 }

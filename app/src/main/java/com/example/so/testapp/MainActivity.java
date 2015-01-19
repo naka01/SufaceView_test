@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
 
         Button button = new Button(this);
         button.setId(R.id.layout1);
-        button.setText("cam");
+        button.setText("texture gra");
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(B_wi,B_hi);
         param.setMargins(20, 20, 50, 0);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -53,8 +53,14 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 //saveBtnF(getApplicationContext());
-                Intent intent = new Intent(MainActivity.this,SubActivity.class);
-                startActivity(intent);
+                FragmentTransaction transaction = manager.beginTransaction();
+                Bundle arg = new Bundle();
+                arg.putInt("page",2);
+                TextureFragment fragment = new TextureFragment();
+                fragment.setArguments(arg);
+                transaction.add(R.id.fragtar,fragment );
+                transaction.addToBackStack(null);//前のfragmentへもどるのに必要
+                transaction.commit();
             }
         });
 
@@ -141,7 +147,7 @@ public class MainActivity extends ActionBarActivity {
 
         button = new Button(this);
         button.setId(R.id.layout5);
-        button.setText("Texture Gra");
+        button.setText("cam");
         param = new RelativeLayout.LayoutParams(B_wi,B_hi);
         param.setMargins(20,20,50,0);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -157,14 +163,10 @@ public class MainActivity extends ActionBarActivity {
                 /*boolean tes = loadBtn(getApplicationContext());
                 Log.v("log", String.format("tes",tes));
                 test(getApplicationContext());*/
-                FragmentTransaction transaction = manager.beginTransaction();
-                Bundle arg = new Bundle();
-                arg.putInt("page",2);
-                TextureFragment fragment = new TextureFragment();
-                fragment.setArguments(arg);
-                transaction.add(R.id.fragtar,fragment );
-                transaction.addToBackStack(null);//前のfragmentへもどるのに必要
-                transaction.commit();
+                Intent intent = new Intent(MainActivity.this,SubActivity.class);
+                startActivity(intent);
+
+
             }
         });
 
