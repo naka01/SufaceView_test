@@ -116,7 +116,7 @@ public class SurfaceAnimation extends SurfaceView
             try {
                 loopCount++;
                 canvas = surfaceHolder.lockCanvas();
-
+                //Log.d("log", String.format("SurfaceView: %s", canvas));
                 phase++;
                 rad = rad +2;
                 scale = scale + 0.025f;
@@ -270,7 +270,14 @@ public class SurfaceAnimation extends SurfaceView
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.v("log","surfaceDestroyed");
         thread = null;
     }
+
+    @Override
+    protected void onDetachedFromWindow (){
+        Log.v("log","onDetachedFromWindow");
+    }
+
 
 }

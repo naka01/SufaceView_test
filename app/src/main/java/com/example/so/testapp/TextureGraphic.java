@@ -35,15 +35,21 @@ public class TextureGraphic extends TextureView implements TextureView.SurfaceTe
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width,
                                           int height) {
-        thread=new Thread(this);
-        thread.start();
+        synchronized (this) {
+            thread = new Thread(this);
+            thread.start();
+        }
     }
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         Log.v("log", "TextureView Destroy:");
-        thread=null;
+        synchronized (this) {
+            thread.interrupt();
+            //thread.stop();
+            thread = null;
         /*graphicobj.release();
         graphicobj = null;*/
+        }
         return false;
     }
 
@@ -72,50 +78,40 @@ public class TextureGraphic extends TextureView implements TextureView.SurfaceTe
             Paint bmppaint = new Paint();
             bmppaint.setAntiAlias(true);
             bmppaint.setFilterBitmap(true);
+            try {
+                loopCount++;
 
-
-            //アニメーション用のループ
-            while (thread != null) {
-
-
-                try {
-                    loopCount++;
+                synchronized (this) {
                     canvas = this.lockCanvas();
 
-
+                    //Log.d("log", String.format("TextureView: %s", canvas));
                     //透明色で前回の描画を消す
                     canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
                     //画像のアニメーション
                     canvas.save();
                     canvas.rotate(deg++
-                            ,graphicobj.x+(graphicobj.getbmpwid()/2)
-                            ,graphicobj.y+(graphicobj.getbmphei()/2));
-                    canvas.drawBitmap(graphicobj.getbmp(),graphicobj.x,graphicobj.y, bmppaint);
+                            , graphicobj.x + (graphicobj.getbmpwid() / 2)
+                            , graphicobj.y + (graphicobj.getbmphei() / 2));
+                    canvas.drawBitmap(graphicobj.getbmp(), graphicobj.x, graphicobj.y, bmppaint);
                     canvas.restore();
 
-
-
-
                     this.unlockCanvasAndPost(canvas);
-
-
-                    waitTime = (loopCount * FRAME_TIME)
-                            - (System.currentTimeMillis() - startTime);
-
-                    if(deg>360){
-                        deg = 0;
-                    }
-
-                    if (waitTime > 0) {
-                        Thread.sleep(waitTime);
-                    }
-                } catch (Exception e) {
                 }
 
+                waitTime = (loopCount * FRAME_TIME)
+                        - (System.currentTimeMillis() - startTime);
 
+                if(deg>360){
+                    deg = 0;
+                }
+
+                if (waitTime > 0) {
+                    Thread.sleep(waitTime);
+                }
+            } catch (Exception e) {
+                break;
             }
-
 
         }
     }

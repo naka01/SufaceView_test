@@ -105,5 +105,12 @@ public class TextureFragment extends Fragment {
         super.onDestroy();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.v("log", "Texture fragment onDestroyView:");
+        textureanim = null;
+        texturegraphic = null;
+    }
 
 }

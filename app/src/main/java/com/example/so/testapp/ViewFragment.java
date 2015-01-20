@@ -135,4 +135,19 @@ public class ViewFragment extends Fragment {
     }
 */
 
+
+    @Override
+    public void onDestroy() {
+        //画像解放
+        Log.v("log", "Surface fragment Destroy:");
+        //textureanim = null;
+        //texturegraphic = null;
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.v("log", "Surface fragment onDestroyView:");
+    }
 }

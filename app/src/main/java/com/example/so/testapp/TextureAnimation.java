@@ -29,12 +29,17 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width,
                                           int height) {
-        thread=new Thread(this);
-        thread.start();
+        synchronized (this) {
+            thread = new Thread(this);
+            thread.start();
+        }
     }
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        thread=null;
+        synchronized (this) {
+            thread.interrupt();
+            thread = null;
+        }
         return false;
     }
 
@@ -71,32 +76,28 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
             paint.setColor(Color.BLUE);
 
 
-
-            //アニメーション用のループ
-            while (thread != null) {
-
-
                 try {
                     loopCount++;
-                    canvas = this.lockCanvas();
 
-                    scale = scale + 0.025f;
+                    synchronized (this) {
+                        canvas = this.lockCanvas();
 
-                    //透明色で前回の描画を消す
-                    canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                        scale = scale + 0.025f;
 
-                    //玉の描画
-                    canvas.save();
-                    canvas.scale(scale, scale, MainActivity.percentHeight(20), MainActivity.percentHeight(30));
-                    canvas.drawCircle(
-                            MainActivity.percentHeight(20), MainActivity.percentHeight(30), BALL_R,
-                            paint);
-                    canvas.restore();
+                        //透明色で前回の描画を消す
+                        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+
+                        //玉の描画
+                        canvas.save();
+                        canvas.scale(scale, scale, MainActivity.percentHeight(20), MainActivity.percentHeight(30));
+                        canvas.drawCircle(
+                                MainActivity.percentHeight(20), MainActivity.percentHeight(30), BALL_R,
+                                paint);
+                        canvas.restore();
 
 
-
-                    this.unlockCanvasAndPost(canvas);
-
+                        this.unlockCanvasAndPost(canvas);
+                    }
 
                     waitTime = (loopCount * FRAME_TIME)
                             - (System.currentTimeMillis() - startTime);
@@ -110,10 +111,8 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
                         Thread.sleep(waitTime);
                     }
                 } catch (Exception e) {
+                    break;
                 }
-
-
-            }
 
 
         }
