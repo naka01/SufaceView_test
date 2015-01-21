@@ -87,9 +87,11 @@ public class TextureFragment extends Fragment {
 
         if(page == 1) {
             textureanim = new TextureAnimation(context);
+            textureanim.setOpaque(false);
             frameLayout.addView(textureanim, new ViewGroup.LayoutParams(MP, MP));
         }else{
             texturegraphic = new TextureGraphic(context);
+            texturegraphic.setOpaque(false);
             frameLayout.addView(texturegraphic, new ViewGroup.LayoutParams(MP, MP));
         }
 

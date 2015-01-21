@@ -39,7 +39,7 @@ public class SurfaceDrag extends SurfaceView
     private float diffx = 0,diffy = 0;
 
     //タッチ中のobj
-    private int target = 0;
+    private int target = -1;
 
     float bx;   //座標
     float by;
@@ -147,6 +147,10 @@ public class SurfaceDrag extends SurfaceView
                         Log.v("log",String.format("hit: %s", i));
                         target = i;
                         hit = true;
+                        //配列の入れ替え
+                        swap(target);
+                        target = 0;
+
                     }
                 }
                 break;
@@ -156,22 +160,29 @@ public class SurfaceDrag extends SurfaceView
                 target = -1;
                 break;
             case MotionEvent.ACTION_MOVE:
+                //Log.v("log",String.format("hit: %s", target));
                 if(hit&(target != -1)){
+
                     diffx = (cx - bx);
                     diffy = (cy - by);
                     objlist.get(target).x = objlist.get(target).x + diffx;
                     objlist.get(target).y = objlist.get(target).y + diffy;
+
+                    //すべてのオブジェクトを判定
+                    allmove();
+
                 }
+                /*//ドラッグしているものと他の判定
                 for(int i = 0;i<count;i++){
                     if(i != target & target != -1){
                         while(objhit(target,i)){
-
-                            objlist.get(i).movebmp(0.001f*(objlist.get(i).x-objlist.get(target).x-diffx)
-                                    ,0.001f*(objlist.get(i).y-objlist.get(target).y-diffy));
+                            objlist.get(i).movebmp(0.001f*(objlist.get(i).x-objlist.get(target).x)
+                                    ,0.001f*(objlist.get(i).y-objlist.get(target).y));
                         }
-                    }
-                }
 
+
+                    }
+                }*/
 
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -212,13 +223,38 @@ public class SurfaceDrag extends SurfaceView
     //接触判定
     private boolean objhit(int target,int other){
             if (Math.pow(objlist.get(target).x + (objlist.get(target).getbmpwid() / 2)
-                    - objlist.get(other).x + (objlist.get(other).getbmpwid() / 2), 2)
-                    + Math.pow(objlist.get(target).y + (objlist.get(target).getbmpwid() / 2)
-                    - objlist.get(other).y + (objlist.get(other).getbmpwid() / 2), 2)
-                    <  Math.pow(objlist.get(target).radius + objlist.get(other).radius,2)) {
+                    - objlist.get(other).x - (objlist.get(other).getbmpwid() / 2), 2)
+                    + Math.pow(objlist.get(target).y + (objlist.get(target).getbmphei() / 2)
+                    - objlist.get(other).y - (objlist.get(other).getbmphei() / 2), 2)
+                    < Math.pow((objlist.get(target).radius-25) + (objlist.get(other).radius-25),2)) {
                 return true;
             } else {
                 return false;
             }
     }
+
+    /*
+    すべてのオブジェクトを比較
+     */
+    private void allmove(){
+        for(int j=count-1;j>=0;j--){
+                for (int k = 0; k < count; k++) {
+                        if (j != k) {
+                            while (objhit(j, k)) {
+                                objlist.get(j).movebmp(0.001f * (objlist.get(j).x - objlist.get(k).x)
+                                        , 0.001f * (objlist.get(j).y - objlist.get(k).y));
+                            }
+                        }
+                }
+        }
+    }
+
+    private void swap(int target){
+        GraphicObj tmp = objlist.get(target);
+        objlist.set(target,objlist.get(0));
+        objlist.set(0,tmp);
+    }
+
+
+
 }

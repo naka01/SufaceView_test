@@ -4,9 +4,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 public class GraphicObj {
-    public float radius;
+    public double radius;
     public float x;
     public float y;
 
@@ -26,13 +27,16 @@ public class GraphicObj {
         //Touch判定用メンバ
         this.x = x;
         this.y = y;
-        this.radius = Math.max(bmphei,bmpwid);
+        //this.radius = Math.max(bmphei,bmpwid);
+        this.radius = Math.sqrt(Math.pow(bmphei, 2) + Math.pow(bmpwid, 2))/2;
+
+        Log.v("log", String.format("radius: %s", this.radius));
     }
 
     //タッチ可能領域とタッチ判定
     public boolean graphicOnTouch(float cx ,float cy){
-        return (this.x-cx)*(this.x-cx) + (this.y-cy)*(this.y-cy)
-                < this.radius*this.radius;
+        return Math.pow((this.x+this.bmpwid/2-cx),2) + Math.pow((this.y+this.bmphei/2-cy),2)
+                < Math.pow(this.radius,2);
     }
 
     //移動
