@@ -20,7 +20,7 @@ import android.view.SurfaceView;
 public class SurfaceAnimation extends SurfaceView
         implements Runnable, SurfaceHolder.Callback {
 
-    static final long FPS = 20;
+    static final long FPS = 60;
     static final long FRAME_TIME = 1000 / FPS;
     static final int BALL_R = MainActivity.percentHeight(7);
     SurfaceHolder surfaceHolder;
@@ -135,9 +135,9 @@ public class SurfaceAnimation extends SurfaceView
                 //画像のアニメーション
                 canvas.save();
                 canvas.rotate(deg++
-                        ,graphicobj.x+(graphicobj.getbmpwid()/2)
-                        ,graphicobj.y+(graphicobj.getbmphei()/2));
-                canvas.drawBitmap(graphicobj.getbmp(),graphicobj.x,graphicobj.y, bmppaint);
+                        ,graphicobj.getx()+(graphicobj.getbmpwid()/2)
+                        ,graphicobj.gety()+(graphicobj.getbmphei()/2));
+                canvas.drawBitmap(graphicobj.getbmp(),graphicobj.getx(),graphicobj.gety(), bmppaint);
                 canvas.restore();
 
                 //円の描画
@@ -226,8 +226,7 @@ public class SurfaceAnimation extends SurfaceView
             case MotionEvent.ACTION_MOVE:
                 if(hit){
                     //Log.v("log", String.format("move: %s", graphicobj.x));
-                    graphicobj.x = graphicobj.x + (cx - bx);
-                    graphicobj.y = graphicobj.y + (cy - by);
+                    graphicobj.movebmp(graphicobj.getx() + (cx - bx),graphicobj.gety() + (cy - by));
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:

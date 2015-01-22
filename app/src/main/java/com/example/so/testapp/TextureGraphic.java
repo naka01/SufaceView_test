@@ -91,9 +91,9 @@ public class TextureGraphic extends TextureView implements TextureView.SurfaceTe
                     //画像のアニメーション
                     canvas.save();
                     canvas.rotate(deg++
-                            , graphicobj.x + (graphicobj.getbmpwid() / 2)
-                            , graphicobj.y + (graphicobj.getbmphei() / 2));
-                    canvas.drawBitmap(graphicobj.getbmp(), graphicobj.x, graphicobj.y, bmppaint);
+                            ,graphicobj.getx()+(graphicobj.getbmpwid()/2)
+                            ,graphicobj.gety()+(graphicobj.getbmphei()/2));
+                    canvas.drawBitmap(graphicobj.getbmp(),graphicobj.getx(),graphicobj.gety(), bmppaint);
                     canvas.restore();
 
                     this.unlockCanvasAndPost(canvas);

@@ -8,8 +8,8 @@ import android.util.Log;
 
 public class GraphicObj {
     public double radius;
-    public float x;
-    public float y;
+    private float x;
+    private float y;
 
     //画像のサイズ
     private Bitmap bmp;
@@ -41,8 +41,23 @@ public class GraphicObj {
 
     //移動
     public void movebmp(float cx ,float cy){
+
         x = x + cx;
         y = y + cy;
+    }
+
+    //移動
+    public void movebmp(float cx ,float cy,int w,int h){
+        if(x + cx+bmpwid/2-radius>w||x + cx+bmpwid/2-radius<0){
+            //x = x + cx;
+            y = y + cy;
+        }else if(y + cy+bmphei/2-radius>h||y + cy+bmphei/2-radius<0) {
+            x = x + cx;
+        }else{
+            x = x + cx;
+            y = y + cy;
+        }
+
     }
 
     //getter
@@ -56,6 +71,14 @@ public class GraphicObj {
 
     public int getbmpwid(){
         return bmpwid;
+    }
+
+    public float getx(){
+        return x;
+    }
+
+    public float gety(){
+        return y;
     }
 
     //リリース

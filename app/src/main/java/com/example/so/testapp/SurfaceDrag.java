@@ -56,9 +56,10 @@ public class SurfaceDrag extends SurfaceView
         this.deg = 0;
 
         //画像読み込み
-        for (int i = 0;i<5;i++) {
+        for (int i = 0;i<30;i++) {
             graphicobj = new GraphicObj(context, R.drawable.ic_launcher
-                    , (float) MainActivity.percentWidth(5+(i*15)), (float) MainActivity.percentHeight(42));
+                    , (float) MainActivity.percentWidth(2+((i%7)*13))
+                    , (float) MainActivity.percentHeight(2+(((int)i/7)*8)));
 
             objlist.add(graphicobj);
         }
@@ -95,14 +96,16 @@ public class SurfaceDrag extends SurfaceView
                 //透明色で前回の描画を消す
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
+                deg++;
+
                 //画像の描画
                 for(int i = 0;i<count;i++) {
                     //画像のアニメーション
                     canvas.save();
-                    canvas.rotate(deg++
-                            , objlist.get(i).x + (objlist.get(i).getbmpwid() / 2)
-                            , objlist.get(i).y + (objlist.get(i).getbmphei() / 2));
-                    canvas.drawBitmap(objlist.get(i).getbmp(), objlist.get(i).x, objlist.get(i).y, bmppaint);
+                    canvas.rotate(deg
+                            , objlist.get(i).getx() + (objlist.get(i).getbmpwid() / 2)
+                            , objlist.get(i).gety() + (objlist.get(i).getbmphei() / 2));
+                    canvas.drawBitmap(objlist.get(i).getbmp(), objlist.get(i).getx(), objlist.get(i).gety(), bmppaint);
                     canvas.restore();
                 }
 
@@ -165,21 +168,44 @@ public class SurfaceDrag extends SurfaceView
 
                     diffx = (cx - bx);
                     diffy = (cy - by);
-                    objlist.get(target).x = objlist.get(target).x + diffx;
-                    objlist.get(target).y = objlist.get(target).y + diffy;
+                    objlist.get(target).movebmp(diffx,diffy,screen_width, screen_height);
+
+
+                    /*if(sidehit(target)) {
+                        //diffx = (cx - bx);
+                        diffy = (cy - by);
+                        objlist.get(target).movebmp(0, diffy);
+                    }
+                    if(verticalhit(target)) {
+                        diffx = (cx - bx);
+                        //diffy = (cy - by);
+                        objlist.get(target).movebmp(diffx,0);
+                    }
+                    if(!sidehit(target)&&!verticalhit(target)){
+                        diffx = (cx - bx);
+                        diffy = (cy - by);
+                        objlist.get(target).movebmp(diffx,diffy);
+                    }*/
+                    //Log.v("log",String.format("hit:side verti %s %s", sidehit(target),verticalhit(target)));
+                    /*objlist.get(target).x = objlist.get(target).x + diffx;
+                    objlist.get(target).y = objlist.get(target).y + diffy;*/
 
                     //すべてのオブジェクトを判定
-                    allmove();
+                    //allmove();
+                    recursive_move(target);
 
                 }
-                /*//ドラッグしているものと他の判定
-                for(int i = 0;i<count;i++){
+                //ドラッグしているものと他の判定
+                /*for(int i = 0;i<count;i++){
                     if(i != target & target != -1){
                         while(objhit(target,i)){
-                            objlist.get(i).movebmp(0.001f*(objlist.get(i).x-objlist.get(target).x)
-                                    ,0.001f*(objlist.get(i).y-objlist.get(target).y));
+                            paremove(target,i);
+                            for(int j = 0;j<count;j++){
+                                if(j != i){
+                                    paremove(i,j);
+                                }
+                            }
                         }
-
 
                     }
                 }*/
@@ -222,10 +248,10 @@ public class SurfaceDrag extends SurfaceView
 
     //接触判定
     private boolean objhit(int target,int other){
-            if (Math.pow(objlist.get(target).x + (objlist.get(target).getbmpwid() / 2)
-                    - objlist.get(other).x - (objlist.get(other).getbmpwid() / 2), 2)
-                    + Math.pow(objlist.get(target).y + (objlist.get(target).getbmphei() / 2)
-                    - objlist.get(other).y - (objlist.get(other).getbmphei() / 2), 2)
+            if (Math.pow(objlist.get(target).getx() + (objlist.get(target).getbmpwid() / 2)
+                    - objlist.get(other).getx() - (objlist.get(other).getbmpwid() / 2), 2)
+                    + Math.pow(objlist.get(target).gety() + (objlist.get(target).getbmphei() / 2)
+                    - objlist.get(other).gety() - (objlist.get(other).getbmphei() / 2), 2)
                     < Math.pow((objlist.get(target).radius-25) + (objlist.get(other).radius-25),2)) {
                 return true;
             } else {
@@ -233,19 +259,68 @@ public class SurfaceDrag extends SurfaceView
             }
     }
 
+    //壁との接触判定
+    private boolean sidehit(int target){
+        if(objlist.get(target).getx() + objlist.get(target).getbmpwid() / 2>screen_width
+                ||objlist.get(target).getx() -  objlist.get(target).getbmpwid() / 2<0){
+            return true;
+        }
+
+        return false;
+    }
+
+    //壁との接触判定
+    private int verticalhit(int target){
+        if(objlist.get(target).gety()+45>screen_height){
+            return 1;
+        }
+        if(objlist.get(target).gety()-45<0){
+            return 2;
+        }
+
+        return 0;
+
+        //return (screen_height-objlist.get(target).gety()<45)||objlist.get(target).gety()<45;
+    }
+
     /*
     すべてのオブジェクトを比較
+    移動処理後、接触判定がtrueになったオブジェクトを取りこぼす
      */
     private void allmove(){
         for(int j=count-1;j>=0;j--){
                 for (int k = 0; k < count; k++) {
                         if (j != k) {
                             while (objhit(j, k)) {
-                                objlist.get(j).movebmp(0.001f * (objlist.get(j).x - objlist.get(k).x)
-                                        , 0.001f * (objlist.get(j).y - objlist.get(k).y));
+                                paremove(j,k);
+
                             }
                         }
                 }
+        }
+    }
+
+    private void paremove(int base ,int move){
+        objlist.get(move).movebmp(0.01f * (objlist.get(move).getx() - objlist.get(base).getx())
+                , 0.01f * (objlist.get(move).gety() - objlist.get(base).gety()));
+    }
+
+    /*
+    再帰関数
+     */
+    private void recursive_move(int tar){
+        boolean hit;
+        for(int i = 0;i<count;i++){
+            hit = false;
+            if(i != tar & tar != -1){
+                while(objhit(tar,i)){
+                    paremove(tar,i);
+                    hit = true;
+                }
+                if(hit) {
+                    recursive_move(i);
+                }
+            }
         }
     }
 
