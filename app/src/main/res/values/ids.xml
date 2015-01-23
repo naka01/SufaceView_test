@@ -6,6 +6,12 @@
     <item type="id" name="layout4" />
     <item type="id" name="layout5" />
     <item type="id" name="layout6" />
+    <item type="id" name="layout7" />
+    <item type="id" name="text1" />
+    <item type="id" name="text2" />
+    <item type="id" name="text3" />
+    <item type="id" name="text4" />
+    <item type="id" name="text5" />
     <item type="id" name="layout_vf1" />
     <item type="id" name="layout_vf2" />
 </resources>

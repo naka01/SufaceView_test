@@ -37,6 +37,11 @@
             android:name=".SensorActivity"
             android:label="@string/title_activity_sensor" >
         </activity>
+        <activity
+            android:name=".OpenGLActivity"
+            android:label="OpenGL" >
+        </activity>
+
     </application>
 
 </manifest>

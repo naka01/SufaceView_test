@@ -195,6 +195,31 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        button = new Button(this);
+        button.setId(R.id.layout7);
+        button.setText("OpenGL");
+        param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20,20,50,0);
+        param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        param.addRule(RelativeLayout.BELOW,R.id.layout6);
+        contentview.addView(button, param);
+
+
+        setContentView(baseview);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*boolean tes = loadBtn(getApplicationContext());
+                Log.v("log", String.format("tes",tes));
+                test(getApplicationContext());*/
+                Intent intent = new Intent(MainActivity.this,OpenGLActivity.class);
+                startActivity(intent);
+
+
+            }
+        });
+
 
         //画面サイズ取得
         Display disp = getWindowManager().getDefaultDisplay();
