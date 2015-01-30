@@ -186,7 +186,7 @@ public class OpenGLActivity extends Activity {
                 box0.colB = 1.0f;
                 box0.drawBox(gl);
             }
-            {
+            /*{
                 box1.posX = 0.5f;
                 box1.rotateY -= 0.5f;
                 box1.colR = 0.0f;
@@ -194,7 +194,7 @@ public class OpenGLActivity extends Activity {
                 box1.colB = 1.0f;
 
                 box1.drawBox(gl);
-            }
+            }*/
         }
     }
 }
