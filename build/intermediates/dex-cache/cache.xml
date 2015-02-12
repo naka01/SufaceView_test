@@ -30,6 +30,13 @@
         <dex dex="D:\svn\testapp\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-106f9dc50404d0c602e911b3333dd00b70f7443d.jar" />
     </item>
     <item
+        jar="D:\svn\testapp\app\build\intermediates\exploded-aar\testapp\volley\unspecified\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="9cbc22e07443d1dcb6603096910334c53c68515b">
+        <dex dex="D:\svn\testapp\app\build\intermediates\pre-dexed\debug\classes-7342e6fa9dc1c81d1f46222ef3f514fd4a36e141.jar" />
+    </item>
+    <item
         jar="C:\adt-bundle-windows-x86_64-20140321\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"

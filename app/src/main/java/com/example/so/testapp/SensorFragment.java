@@ -15,7 +15,10 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+/*
+センサーの値を取得するサンプル
 
+ */
 public class SensorFragment extends Fragment implements SensorEventListener {
 
     private Context context;
