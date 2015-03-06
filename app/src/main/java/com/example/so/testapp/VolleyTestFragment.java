@@ -56,7 +56,7 @@ public class VolleyTestFragment extends Fragment {
 
         // 東京都の天気情報  リクエストREST
         final String url =
-                "http://weather.livedoor.com/forecast/webservice/json/v1?city=130010";
+                "http://www2.chuogeomatics.jp/demo/app/tiles/geojson/www2.chuogeomatics.jp/tilegeojson/vector-postgis-hinanjo/13/7274/3222.geojson";
 
         RelativeLayout baseframe = (RelativeLayout)inflater.inflate(R.layout.fragment_volley_test, container, false);
 

@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,21 @@ public class SensorFragment extends Fragment implements SensorEventListener {
             ,mTextview2
             ,mTextview3
             ,mTextview4
-            ,mTextview5;
+            ,mTextview5
+            ,mTextview6;
     private SensorManager mSensorManager;
+
+    private static final int MATRIX_SIZE = 16;
+    /* 回転行列 */
+    float[]  inR = new float[MATRIX_SIZE];
+    float[] outR = new float[MATRIX_SIZE];//output
+    float[]    I = new float[MATRIX_SIZE];
+
+    /* センサーの値 */
+    float[] orientationValues   = new float[3];
+    float[] magneticValues      = new float[3];
+    float[] accelerometerValues = new float[3];
+
 
     public SensorFragment() {
         // Required empty public constructor
@@ -97,6 +111,16 @@ public class SensorFragment extends Fragment implements SensorEventListener {
         param.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         relativeLayout_main.addView(mTextview5, param);
 
+        mTextview6 = new TextView(context);
+        mTextview6.setBackgroundColor(Color.rgb(80, 80, 255));
+        mTextview6.setText("");
+        mTextview6.setId(R.id.text6);
+        param =  new RelativeLayout.LayoutParams(dpTopx(270),dpTopx(50));
+        param.setMargins(dpTopx(20), dpTopx(0), dpTopx(10), dpTopx(20));
+        param.addRule(RelativeLayout.BELOW,R.id.text5);
+        param.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        relativeLayout_main.addView(mTextview6, param);
+
         return relativeLayout_main;
     }
 
@@ -133,6 +157,13 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        // Listenerの登録解除
+        mSensorManager.unregisterListener(this);
+        }
+
+    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // センサーの精度が変更されると呼ばれる
     }
@@ -142,6 +173,7 @@ public class SensorFragment extends Fragment implements SensorEventListener {
         switch (event.sensor.getType() ) {
             case Sensor.TYPE_ACCELEROMETER:
                 mTextview1.setText(String.format("加速度: %s\n　　　%s\n　　　%s", event.values[0], event.values[1], event.values[2]));
+                accelerometerValues = event.values.clone();
                 break;
 
             case Sensor.TYPE_PRESSURE:
@@ -149,7 +181,7 @@ public class SensorFragment extends Fragment implements SensorEventListener {
                 break;
 
             case Sensor.TYPE_GRAVITY:
-                mTextview3.setText(String.format("重力　: %s\n　　　%s\n　　　%s", event.values[0], event.values[1], event.values[2]));
+                mTextview3.setText(String.format("重力　:x %s\n　　　y %s\n　　　z %s", event.values[0], event.values[1], event.values[2]));
                 break;
 
             case Sensor.TYPE_GYROSCOPE:
@@ -158,9 +190,44 @@ public class SensorFragment extends Fragment implements SensorEventListener {
 
             case Sensor.TYPE_MAGNETIC_FIELD:
                 mTextview5.setText(String.format("磁場: %s\n　　　%s\n　　　%s", event.values[0], event.values[1], event.values[2]));
+                magneticValues = event.values.clone();
                 break;
         }
+
+        if (magneticValues != null && accelerometerValues != null) {
+
+            SensorManager.getRotationMatrix(inR, I, accelerometerValues, magneticValues);
+
+            //Activityの表示が縦固定の場合。横向きになる場合、修正が必要です
+            SensorManager.remapCoordinateSystem(inR, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
+            orientationValues = SensorManager.getOrientation(outR, orientationValues);
+
+            setLookAt( orientationValues[1],orientationValues[2]);
+
+
+        }
     }
+
+    public void setLookAt(float z,float y){
+        z = 0;
+
+        float cosz = (float)Math.cos(z);
+        float sinz = (float)Math.sin(z);
+        float cosy = (float)Math.cos(y);
+        float siny = (float)Math.sin(y);
+
+        /*float lookx = (-5*cosz*cosy)+(3*siny*cosz)+5;
+        float looky = (-5*sinz)-(3*cosz)+3;
+        float lookz =(5*siny*cosz)-(3*cosz*cosy);*/
+
+        float lookx = (-5*cosz*cosy)+(3*sinz*cosy)+5;
+        float looky = (-5*sinz)-(3*cosz)+3;
+        float lookz =(5*siny*cosz)-(3*sinz*siny);
+
+        mTextview6.setText(String.format("傾き: %s\n　　　%s\n　　　%s", lookx,looky,lookz));
+
+    }
+
     /*
      * dpからpxに変換
      */
