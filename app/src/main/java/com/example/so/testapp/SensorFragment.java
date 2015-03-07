@@ -42,8 +42,7 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     float[] orientationValues   = new float[3];
     float[] magneticValues      = new float[3];
     float[] accelerometerValues = new float[3];
-    float[] valuesGravity = new float[3];
-    float[] orientationValuesBuf   = new float[3];//バッファ
+
 
     public SensorFragment() {
         // Required empty public constructor
@@ -182,7 +181,6 @@ public class SensorFragment extends Fragment implements SensorEventListener {
                 break;
 
             case Sensor.TYPE_GRAVITY:
-                valuesGravity = event.values.clone();
                 mTextview3.setText(String.format("重力　:x %s\n　　　y %s\n　　　z %s", event.values[0], event.values[1], event.values[2]));
                 break;
 
@@ -196,7 +194,7 @@ public class SensorFragment extends Fragment implements SensorEventListener {
                 break;
         }
 
-        /*if (magneticValues != null && accelerometerValues != null) {
+        if (magneticValues != null && accelerometerValues != null) {
 
             SensorManager.getRotationMatrix(inR, I, accelerometerValues, magneticValues);
 
@@ -206,64 +204,12 @@ public class SensorFragment extends Fragment implements SensorEventListener {
 
             setLookAt( orientationValues[1],orientationValues[2]);
 
-        }*/
 
-        if (SensorManager.getRotationMatrix(inR, null, accelerometerValues, magneticValues)) {
-            SensorManager.remapCoordinateSystem(inR, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
-            SensorManager.getOrientation(outR,  orientationValues);
-
-            if(valuesGravity[2] < 0)                                     {
-                if ( orientationValues[1] > 0) {
-                     orientationValues[1] = (float) (Math.PI -  orientationValues[1]);
-                }
-                else {
-                     orientationValues[1] = (float) (-Math.PI -  orientationValues[1]);
-                }
-            }
-
-
-            updateOrientationBuffer(orientationValues);
-
-            /*for (int i = 0; i <  orientationValues.length; i++) {
-                 orientationValues[i] /= Math.PI;
-                 orientationValues[i] *= 100;
-                 orientationValues[i] = (int) orientationValues[i];
-                 orientationValues[i] /= 100;
-            }*/
-
-
-            //updateOrientationBuffer( orientationValues);
-
-            //quadcopter.onEvent(new Event(Event.Codes.ORIENTATION_CHANGED, calculateSmoothedOrientation()));
-        }
-        else {
-            Log.d("Quadcopter-SM", "Matrix rotate error");
         }
     }
-
-    /**
-     * バッファの保存 ローパスフィルタ
-     * @param orientationValues
-     */
-    public void updateOrientationBuffer(float[] orientationValues){
-
-        orientationValuesBuf[0] = 0.9f*orientationValuesBuf[0] + 0.1f*orientationValues[0];
-        orientationValuesBuf[1] = 0.9f*orientationValuesBuf[1] + 0.1f*orientationValues[1];
-        orientationValuesBuf[2] = 0.9f*orientationValuesBuf[2] + 0.1f*orientationValues[2];
-
-        mTextview6.setText(String.format("傾き: %s\n　　　%s\n　　　%s", orientationValuesBuf[0], orientationValuesBuf[1],orientationValuesBuf[2]));
-        setLookAt( orientationValuesBuf[1],orientationValuesBuf[2]);
-    }
-
-
-    /**
-     * ビューポートの計算
-     * @param z
-     * @param y
-     */
-
 
     public void setLookAt(float z,float y){
+        z = 0;
 
         float cosz = (float)Math.cos(z);
         float sinz = (float)Math.sin(z);
@@ -278,7 +224,7 @@ public class SensorFragment extends Fragment implements SensorEventListener {
         float looky = (-5*sinz)-(3*cosz)+3;
         float lookz =(5*siny*cosz)-(3*sinz*siny);
 
-        //mTextview6.setText(String.format("傾き: %s\n　　　%s\n　　　%s", lookx,looky,lookz));
+        mTextview6.setText(String.format("傾き: %s\n　　　%s\n　　　%s", lookx,looky,lookz));
 
     }
 
