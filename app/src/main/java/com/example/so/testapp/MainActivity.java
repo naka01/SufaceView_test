@@ -68,9 +68,9 @@ public class MainActivity extends ActionBarActivity {
         button.setId(R.id.layout2);
         button.setText("surfaceView");
         param = new RelativeLayout.LayoutParams(B_wi,B_hi);
-        param.setMargins(20,20,50,0);
+        param.setMargins(20, 20, 50, 0);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        param.addRule(RelativeLayout.BELOW,R.id.layout1);
+        param.addRule(RelativeLayout.BELOW, R.id.layout1);
         contentview.addView(button, param);
 
 
@@ -179,7 +179,6 @@ public class MainActivity extends ActionBarActivity {
         param.addRule(RelativeLayout.BELOW,R.id.layout5);
         contentview.addView(button, param);
 
-
         setContentView(baseview);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -204,7 +203,6 @@ public class MainActivity extends ActionBarActivity {
         param.addRule(RelativeLayout.BELOW,R.id.layout6);
         contentview.addView(button, param);
 
-
         setContentView(baseview);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -215,7 +213,6 @@ public class MainActivity extends ActionBarActivity {
                 test(getApplicationContext());*/
                 Intent intent = new Intent(MainActivity.this,OpenGLActivity.class);
                 startActivity(intent);
-
 
             }
         });
@@ -246,6 +243,8 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        //コンパス
+
         button = new Button(this);
         button.setId(R.id.layout9);
         button.setText("compass");
@@ -266,12 +265,69 @@ public class MainActivity extends ActionBarActivity {
                 test(getApplicationContext());*/
                 FragmentTransaction transaction = manager.beginTransaction();
                 OrientationViewFragment fragment = new OrientationViewFragment();
+                transaction.add(R.id.fragtar, fragment);
+                transaction.addToBackStack(null);//前のfragmentへもどるのに必要
+                transaction.commit();
+            }
+        });
+
+        /**
+         * tab
+         */
+        button = new Button(this);
+        button.setId(R.id.layout10);
+        button.setText("tab");
+        param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20,20,50,0);
+        //param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        param.addRule(RelativeLayout.BELOW,R.id.layout9);
+        contentview.addView(button, param);
+
+
+        setContentView(baseview);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*boolean tes = loadBtn(getApplicationContext());
+                Log.v("log", String.format("tes",tes));
+                test(getApplicationContext());*/
+                FragmentTransaction transaction = manager.beginTransaction();
+                TabUiTest fragment = new TabUiTest();
                 transaction.add(R.id.fragtar,fragment );
                 transaction.addToBackStack(null);//前のfragmentへもどるのに必要
                 transaction.commit();
             }
         });
 
+        /**
+         * VideoView
+         */
+        button = new Button(this);
+        button.setId(R.id.layout11);
+        button.setText("Video");
+        param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20,20,50,0);
+        //param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        param.addRule(RelativeLayout.BELOW,R.id.layout10);
+        contentview.addView(button, param);
+
+
+        setContentView(baseview);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*boolean tes = loadBtn(getApplicationContext());
+                Log.v("log", String.format("tes",tes));
+                test(getApplicationContext());*/
+                FragmentTransaction transaction = manager.beginTransaction();
+                VideoViewFragment fragment = new VideoViewFragment();
+                transaction.add(R.id.fragtar,fragment );
+                transaction.addToBackStack(null);//前のfragmentへもどるのに必要
+                transaction.commit();
+            }
+        });
 
         //画面サイズ取得
         Display disp = getWindowManager().getDefaultDisplay();

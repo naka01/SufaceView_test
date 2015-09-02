@@ -167,7 +167,6 @@ public class SurfaceAnimation extends SurfaceView
                 canvas.drawPath(mPath, mDotPaint);
 
                 lineeffect = null;
-                mPath = null;
                 mDotPaint.setPathEffect(null);
 
                 surfaceHolder.unlockCanvasAndPost(canvas);

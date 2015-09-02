@@ -1,5 +1,6 @@
 package com.example.so.testapp;
 
+import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
@@ -203,7 +204,6 @@ public class SensorFragment extends Fragment implements SensorEventListener {
             orientationValues = SensorManager.getOrientation(outR, orientationValues);
 
             setLookAt( orientationValues[1],orientationValues[2]);
-
 
         }
     }
