@@ -354,5 +354,14 @@ public class MainActivity extends ActionBarActivity {
         return (int) (g_wi*per);
     }
 
+    @Override
+    public void onBackPressed() {
+        //バックスタックの登録数をチェックして0であればPopUpは存在しない
+        if (0 != manager.getBackStackEntryCount()){
+            manager.popBackStack();
 
+            return;
+        }
+        super.onBackPressed();
+    }
 }
