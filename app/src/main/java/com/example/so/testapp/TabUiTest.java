@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +31,16 @@ public class TabUiTest extends Fragment {
 
         //root
         rootView = (LinearLayout)inflater.inflate(R.layout.fragment_tab, container, false);
-        //rootView.setBackgroundColor(Color.argb(255, 255, 255, 255));
+        rootView.setOnClickListener(null);
+        rootView.setBackgroundColor(Color.argb(255, 255, 255, 255));
 
-        TabHost tabhost = (TabHost)rootView.findViewById(android.R.id.tabhost);
-        tabhost.setup();
+        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tab_layout);
+        tabLayout.setBackgroundColor(Color.BLACK);
+        tabLayout.setTabTextColors(Color.WHITE,Color.YELLOW);
+        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
 
-        tabhost.addTab(tabhost
-                .newTabSpec("tab1")
-                .setContent(android.R.id.tabcontent));
 
         return rootView;
     }
