@@ -329,6 +329,34 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        /**
+         *
+         * GraphFragment
+         *
+         */
+        button = new Button(this);
+        button.setId(R.id.layout12);
+        button.setText("Graphfragment");
+        param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20,20,50,0);
+        //param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        param.addRule(RelativeLayout.BELOW,R.id.layout11);
+        contentview.addView(button, param);
+
+
+        setContentView(baseview);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = manager.beginTransaction();
+                GraphFragment fragment = new GraphFragment();
+                transaction.add(R.id.fragtar,fragment );
+                transaction.addToBackStack(null);//前のfragmentへもどるのに必要
+                transaction.commit();
+            }
+        });
+
         //画面サイズ取得
         Display disp = getWindowManager().getDefaultDisplay();
         Point size = new Point();

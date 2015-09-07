@@ -12,10 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TabHost;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 
 public class TabUiTest extends Fragment {
 
@@ -24,6 +28,7 @@ public class TabUiTest extends Fragment {
     private Context context;
     private GoogleMap googleMap;
 
+    private TabLayout tabLayout;
 
     public TabUiTest(){
 
@@ -39,7 +44,7 @@ public class TabUiTest extends Fragment {
         rootView.setOnClickListener(null);
         rootView.setBackgroundColor(Color.argb(255, 255, 255, 255));
 
-        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tab_layout);
+        tabLayout = (TabLayout) rootView.findViewById(R.id.tab_layout);
         tabLayout.setBackgroundColor(Color.BLACK);
         tabLayout.setTabTextColors(Color.WHITE, Color.YELLOW);
         tabLayout.addTab(tabLayout.newTab().setText("Tab 1").setTag("1"));
@@ -51,22 +56,46 @@ public class TabUiTest extends Fragment {
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Log.v("log", String.format("onTabSelected: %s", tab.getTag()));
-            }
+            public void onMapReady(GoogleMap gMap) {
+                googleMap = gMap;
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                Log.v("log", String.format("onTabUnselected: %s", tab.getTag()));
-            }
+                tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                Log.v("log", String.format("onTabReselected: %s", tab.getTag()));
+                        switch(tab.getPosition()){
+                            case 0:
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(35.630062, 139.733086), 15));
+                                break;
+
+                            case 1:
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(35.679704, 139.697616), 15));
+                                break;
+
+                            case 2:
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(35.683915, 139.765614), 15));
+                                break;
+                        }
+
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                });
             }
         });
+
+
+
 
 
         return rootView;

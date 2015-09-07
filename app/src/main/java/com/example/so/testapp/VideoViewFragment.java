@@ -68,7 +68,23 @@ public class VideoViewFragment extends Fragment {
             public void onPrepared(MediaPlayer mp) {
                 //videoview.seekTo(videoview.getCurrentPosition() + 10000);
                 mp.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
-                videoview.start();
+                mp.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                    @Override
+                    public boolean onError(MediaPlayer mp, int what, int extra) {
+                        Log.v("log", String.format("onError: %s %s", what, extra));
+                        return true;
+                    }
+                });
+                mp.start();
+
+                /*mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        Log.v("log", "complete");
+                        mp.start();
+                    }
+                });*/
+                //videoview.start();
 
                 /*handler.post(new Runnable() {
 

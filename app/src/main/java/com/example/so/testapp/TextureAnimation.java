@@ -31,6 +31,9 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width,
                                           int height) {
+
+        Log.v("log", String.format("onSurfaceTextureAvailable: %s %s", width, height));
+
         synchronized (this) {
             thread = new Thread(this);
             thread.start();
@@ -48,6 +51,7 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width,
                                             int height) {
+        Log.v("log", String.format("onSurfaceTextureSizeChanged: %s %s", width, height));
     }
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
@@ -116,8 +120,6 @@ public class TextureAnimation extends TextureView  implements TextureView.Surfac
                             path.quadTo((float) (i*Math.PI/180)*100, (float) Math.sin(i*Math.PI/180)*100+300
                                     , (float) ((i+1)*Math.PI/180)*100, (float) Math.sin((i+1)*Math.PI/180)*100+300);
                         }*/
-
-
 
                         path.quadTo((float) (phase*Math.PI/180)*100, (float) Math.sin(phase*Math.PI/180)*100+300
                                 , (float) ((phase+1)*Math.PI/180)*100, (float) Math.sin((phase+1)*Math.PI/180)*100+300);

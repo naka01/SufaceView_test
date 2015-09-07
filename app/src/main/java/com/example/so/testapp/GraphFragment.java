@@ -14,10 +14,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-public class TextureFragment extends Fragment {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class GraphFragment extends Fragment {
 
 
     /** Fragmentで保持しておくデータ */
@@ -25,15 +22,13 @@ public class TextureFragment extends Fragment {
 
     private final int MP = WindowManager.LayoutParams.MATCH_PARENT;
     private FragmentManager manager;
-    private TextureAnimation textureanim = null;
-    private TextureGraphic texturegraphic = null;
+    private GraphView graphview = null;
 
     private final int BS = 100;
     private final int MB = 20;
 
 
-    public TextureFragment() {
-        // Required empty public constructor
+    public GraphFragment() {
     }
 
     @Override
@@ -47,8 +42,6 @@ public class TextureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //bundle
-        int page = getArguments().getInt("page",1);
 
         // FragmentのViewを返却
         context = getActivity().getApplicationContext();
@@ -81,18 +74,12 @@ public class TextureFragment extends Fragment {
         FrameLayout frameLayout = new FrameLayout(context);
         param = new RelativeLayout.LayoutParams(MP, MP);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        param.addRule(RelativeLayout.BELOW,R.id.layout_vf1);
+        param.addRule(RelativeLayout.BELOW, R.id.layout_vf1);
         relativeLayout_main.addView(frameLayout,param);
 
-        if(page == 1) {
-            textureanim = new TextureAnimation(context);
-            textureanim.setOpaque(false);
-            frameLayout.addView(textureanim, new ViewGroup.LayoutParams(MP, MP));
-        }else{
-            texturegraphic = new TextureGraphic(context);
-            texturegraphic.setOpaque(false);
-            frameLayout.addView(texturegraphic, new ViewGroup.LayoutParams(MP, MP));
-        }
+        graphview = new GraphView(context);
+        graphview.setOpaque(false);
+        frameLayout.addView(graphview, new ViewGroup.LayoutParams(MP, MP));
 
         return relativeLayout_main;
     }
@@ -101,7 +88,7 @@ public class TextureFragment extends Fragment {
     public void onDestroy() {
         //画像解放
         Log.v("log", "Texture fragment Destroy:");
-        //textureanim = null;
+        //graphview = null;
         //texturegraphic = null;
         super.onDestroy();
     }
@@ -110,8 +97,7 @@ public class TextureFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.v("log", "Texture fragment onDestroyView:");
-        textureanim = null;
-        texturegraphic = null;
+        graphview = null;
     }
 
 }
