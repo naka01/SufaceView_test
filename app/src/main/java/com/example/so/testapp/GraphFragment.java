@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+
 public class GraphFragment extends Fragment {
 
 
@@ -41,7 +43,6 @@ public class GraphFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
 
         // FragmentのViewを返却
         context = getActivity().getApplicationContext();
@@ -75,10 +76,12 @@ public class GraphFragment extends Fragment {
         param = new RelativeLayout.LayoutParams(MP, MP);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         param.addRule(RelativeLayout.BELOW, R.id.layout_vf1);
-        relativeLayout_main.addView(frameLayout,param);
+        relativeLayout_main.addView(frameLayout, param);
 
         graphview = new GraphView(context);
         graphview.setOpaque(false);
+        graphview.setDatasetList(setDate());
+        graphview.setScale_y(20);
         frameLayout.addView(graphview, new ViewGroup.LayoutParams(MP, MP));
 
         return relativeLayout_main;
@@ -100,4 +103,110 @@ public class GraphFragment extends Fragment {
         graphview = null;
     }
 
+    private ArrayList<Float> setDate(){
+
+        //サンプルデータ作成
+        ArrayList<Float> setdata = new ArrayList<Float>();
+        setdata.add((float)1);
+        setdata.add((float)3.2);
+        setdata.add((float)4.5);
+        setdata.add((float)4.5);
+        setdata.add((float)4.7);
+        setdata.add((float)3);
+        setdata.add((float)2.1);
+        setdata.add((float)1.9);
+        setdata.add((float)3.3);
+        setdata.add((float)1.3);
+        setdata.add((float)1.2);
+        setdata.add((float)2.4);
+        setdata.add((float)2.9);
+        setdata.add((float)1.2);
+        setdata.add((float)3.1);
+        setdata.add((float)1);
+        setdata.add((float)0.95);
+        setdata.add((float)1.7);
+        setdata.add((float)0.65);
+        setdata.add((float)0.73);
+        setdata.add((float)0.6);
+        setdata.add((float)0.52);
+        setdata.add((float)1.1);
+        setdata.add((float)0.58);
+        setdata.add((float)0.77);
+        setdata.add((float)2.8);
+        setdata.add((float)1.8);
+        setdata.add((float)0.75);
+        setdata.add((float)1.3);
+        setdata.add((float)5);
+        setdata.add((float)3.3);
+        setdata.add((float)1.7);
+        setdata.add((float)1.8);
+        setdata.add((float)3.7);
+        setdata.add((float)2.3);
+        setdata.add((float)1.4);
+        setdata.add((float)3.5);
+        setdata.add((float)2.9);
+        setdata.add((float)3.3);
+        setdata.add((float)4);
+        setdata.add((float)4);
+        setdata.add((float)1.8);
+        setdata.add((float)1);
+        setdata.add((float)6.9);
+        setdata.add((float)7);
+        setdata.add((float)5.4);
+        setdata.add((float)4.5);
+        setdata.add((float)2.6);
+        setdata.add((float)2.3);
+        setdata.add((float)2.2);
+        setdata.add((float)2.3);
+        setdata.add((float)3.1);
+        setdata.add((float)2.3);
+        setdata.add((float)2.1);
+        setdata.add((float)2.3);
+        setdata.add((float)4.6);
+        setdata.add((float)2.8);
+        setdata.add((float)1.9);
+        setdata.add((float)4.6);
+        setdata.add((float)5.2);
+        setdata.add((float)3.8);
+        setdata.add((float)8.7);
+        setdata.add((float)4);
+        setdata.add((float)5.7);
+        setdata.add((float)4.1);
+        setdata.add((float)4.5);
+        setdata.add((float)3.5);
+        setdata.add((float)5.4);
+        setdata.add((float)10);
+        setdata.add((float)13);
+        setdata.add((float)5.6);
+        setdata.add((float)6.2);
+        setdata.add((float)6.9);
+        setdata.add((float)12);
+        setdata.add((float)13);
+        setdata.add((float)4.9);
+        setdata.add((float)9.5);
+        setdata.add((float)2.5);
+        setdata.add((float)2.1);
+        setdata.add((float)5.2);
+        setdata.add((float)7);
+        setdata.add((float)5.8);
+        setdata.add((float)5.1);
+        setdata.add((float)4.3);
+        setdata.add((float)0.59);
+        setdata.add((float)0.49);
+        setdata.add((float)0.46);
+        setdata.add((float)0.32);
+        setdata.add((float)0.27);
+        setdata.add((float)0.21);
+        setdata.add((float)0.17);
+        setdata.add((float)0.17);
+        setdata.add((float)0.11);
+        setdata.add((float)0.11);
+        setdata.add((float)0.06);
+        setdata.add((float)0.14);
+        setdata.add((float)0.3);
+        setdata.add((float)0.4);
+        setdata.add((float)0.23);
+        setdata.add((float)0.5);
+        return setdata;
+    }
 }

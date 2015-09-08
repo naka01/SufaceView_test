@@ -9,22 +9,33 @@ import android.graphics.SurfaceTexture;
 import android.util.Log;
 import android.view.TextureView;
 
+import java.util.ArrayList;
+
 public class GraphView extends TextureView implements TextureView.SurfaceTextureListener,Runnable{
 
 
-    static final long FPS = 60;
+    static final long FPS = 30;
     static final long FRAME_TIME = 600 / FPS;
     Thread thread;
 
-    private float scale;
-
-    private int leftpadding = 30;
+    //グラフ描画領域のパディング
+    private int leftpadding = 80;
     private int rightpadding = 30;
     private int toppadding = 30;
     private int bottompadding = 30;
 
+    //レイアウトされたViewのサイズ
     private int view_w;
     private int view_h;
+
+    //グラフにするデータセット
+    private ArrayList<Float> datasetList;
+    private int datalistcount;
+
+    //軸のスケール設定
+    private float scale_x;
+    private float scale_y;
+    private float max_y;
 
     public GraphView(Context context){
         super(context);
@@ -77,55 +88,28 @@ public class GraphView extends TextureView implements TextureView.SurfaceTexture
 
         Path path = new Path();
 
-        paint.setAntiAlias(true);
+        Path pathline = new Path();
 
-        int phase = 0;
+
+        float phase = 0;
 
         // Background
         bgPaint.setStyle(Paint.Style.FILL);
         bgPaint.setColor(Color.WHITE);
 
 
-
-        /**
-         * フレームの描画
-         */
-        //グラフラインのスタイル
-        paint.setStyle(Paint.Style.STROKE); // スタイルは線(Stroke)を指定する
-        paint.setStrokeWidth(3); // 線の太さ
-        paint.setColor(Color.rgb(0, 128, 255)); // 線の色
-
-        synchronized (this) {
-            canvas = this.lockCanvas();
-
-            //背景の適用
-            canvas.drawPaint(bgPaint);
-
-            //ｙ軸の描画
-            path.moveTo(leftpadding, toppadding);
-            path.rLineTo(0, view_h - toppadding - bottompadding);
-            path.rLineTo(view_w - rightpadding -leftpadding, 0);
-            path.rLineTo(0,-view_h + toppadding + bottompadding);
-            canvas.drawPath(path, paint);
-
-            this.unlockCanvasAndPost(canvas);
-
-        }
-
-
-        /**
-         * グラフの描画
-         */
-        //グラフラインのスタイル
-        paint.setStyle(Paint.Style.STROKE); // スタイルは線(Stroke)を指定する
-        paint.setStrokeWidth(8); // 線の太さ
-        paint.setColor(Color.rgb(0, 128, 255)); // 線の色
-
         // 開始位置
+        pathline.moveTo(datasetList.get(0) +  leftpadding
+                , datasetList.get(0) - bottompadding + view_h);
 
-        path.moveTo((float) (phase * Math.PI / 180) * 100, (float) Math.sin(phase * Math.PI / 180) * 100 + 300);
+        //x軸のスケールをセット
+        scale_x = (view_w - rightpadding - leftpadding)/(float)datalistcount;
+
+        //y軸のスケールをセット
+        scale_y = view_h/max_y;
+
         //アニメーション用のループ
-        /*while (thread != null) {
+        while (thread != null) {
 
             try {
                 loopCount++;
@@ -133,20 +117,64 @@ public class GraphView extends TextureView implements TextureView.SurfaceTexture
                 synchronized (this) {
                     canvas = this.lockCanvas();
 
-                    scale = scale + 0.025f;
+                    /**
+                     * フレーム描画
+                     */
+                    //グラフラインのスタイル
+                    paint.setAntiAlias(true);
+                    paint.setStyle(Paint.Style.STROKE); // スタイルは線(Stroke)を指定する
+                    paint.setStrokeWidth(3); // 線の太さ
+                    paint.setColor(Color.rgb(255, 128, 0)); // 線の色
 
+                    //背景の適用
+                    canvas.drawPaint(bgPaint);
 
-                    path.quadTo((float) (phase*Math.PI/180)*100, (float) Math.sin(phase*Math.PI/180)*100+300
-                            , (float) ((phase+1)*Math.PI/180)*100, (float) Math.sin((phase+1)*Math.PI/180)*100+300);
-
-                    phase++;
-
+                    //軸の描画
+                    path.moveTo(leftpadding, toppadding);
+                    path.rLineTo(0, view_h - toppadding - bottompadding);
+                    path.rLineTo(view_w - rightpadding - leftpadding, 0);
+                    //path.rLineTo(0, -view_h + toppadding + bottompadding);
                     canvas.drawPath(path, paint);
+                    paint.reset();
+
+                    //ラベルの描画
+                    paint.setAntiAlias(true);
+                    paint.setColor(Color.rgb(255, 128, 0)); // 線の色
+                    paint.setTextSize(25);
+                    float textpos = (paint.getFontMetrics().bottom-paint.getFontMetrics().ascent)/2f;
+                    float textXpos = (paint.measureText("Test1"))/2f;
+                    Log.v("log", String.format("Text h : %s ", textpos));
+
+                    canvas.drawText("Test1",0, toppadding + textpos,paint);
+                    canvas.drawText("Test2",0, (view_h-bottompadding-toppadding)/2 + textpos,paint);
+                    canvas.drawText("Test3",0, view_h-bottompadding-toppadding + textpos,paint);
+                    canvas.drawText("Test4",textXpos, view_h,paint);
+                    canvas.drawText("Test5",(view_w-leftpadding-rightpadding)/2+textXpos, view_h,paint);
+                    canvas.drawText("Test5",view_w-leftpadding-rightpadding+textXpos, view_h,paint);
+
+                    path.reset();
+                    paint.reset();
+                    /**
+                     * グラフプロット
+                     * アニメーション
+                     */
+                    //グラフラインのスタイル
+                    paint.setAntiAlias(true);
+                    paint.setStyle(Paint.Style.STROKE); // スタイルは線(Stroke)を指定する
+                    paint.setStrokeWidth(6); // 線の太さ
+                    paint.setColor(Color.rgb(0, 128, 255)); // 線の色
+                    paint.setStrokeCap(Paint.Cap.ROUND);
+                    paint.setStrokeJoin(Paint.Join.ROUND);
+
+
+                    pathline.quadTo((float) phase*scale_x +  leftpadding, (float) -datasetList.get((int)phase)*scale_y - bottompadding + view_h
+                            , (float) (phase+1)*scale_x +  leftpadding, (float) -datasetList.get((int)(phase + 1))*scale_y - bottompadding + view_h);
+
+                    phase = phase+1;
+
+                    canvas.drawPath(pathline, paint);
 
                     paint.setPathEffect(null);
-
-
-
 
                     this.unlockCanvasAndPost(canvas);
 
@@ -156,7 +184,9 @@ public class GraphView extends TextureView implements TextureView.SurfaceTexture
                         - (System.currentTimeMillis() - startTime);
 
 
-                if (phase>359){
+                if (phase>datalistcount -2 ){
+
+                    Log.v("log", String.format("Last  X : %s ", (phase+1)*scale_x));
                     break;
                 }
 
@@ -164,13 +194,26 @@ public class GraphView extends TextureView implements TextureView.SurfaceTexture
                     Thread.sleep(waitTime);
                 }
             } catch (Exception e) {
+                //エラー時、unlockする
+                //this.unlockCanvasAndPost(canvas);
                 break;
             }
 
 
-        }*/
+        }
     }
 
+    /**
+     * データリストをセット
+     * @param datasetList
+     */
+    public void setDatasetList(ArrayList<Float> datasetList) {
+        this.datasetList = datasetList;
+        this.datalistcount = datasetList.size();
+    }
 
+    public void setScale_y(float maxy){
+        this.max_y = maxy;
+    }
 }
 
