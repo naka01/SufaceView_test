@@ -357,6 +357,35 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        /**
+         *
+         * tab + viewpager
+         *
+         */
+        button = new Button(this);
+        button.setId(R.id.layout13);
+        button.setText("tab + viewpager");
+        param = new RelativeLayout.LayoutParams(B_wi,B_hi);
+        param.setMargins(20,20,50,0);
+        //param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        param.addRule(RelativeLayout.BELOW,R.id.layout12);
+        contentview.addView(button, param);
+
+
+        setContentView(baseview);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = manager.beginTransaction();
+                TabUIpagerFragment fragment = new TabUIpagerFragment();
+                transaction.add(R.id.fragtar,fragment );
+                transaction.addToBackStack(null);//前のfragmentへもどるのに必要
+                transaction.commit();
+            }
+        });
+
+
         //画面サイズ取得
         Display disp = getWindowManager().getDefaultDisplay();
         Point size = new Point();
