@@ -1,5 +1,6 @@
 package com.example.so.testapp;
 
+import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
@@ -39,6 +40,8 @@ public class TabUiTest extends Fragment {
 
     private Polyline polyline1,polyline2,polyline3,polyline4;
     private ArrayList<Polyline> ArrayPolylineSet;
+
+    private boolean touchfrag = true;
 
     public TabUiTest(){
 
@@ -118,17 +121,34 @@ public class TabUiTest extends Fragment {
                     @Override
                     public void onMapClick(LatLng latLng) {
                         //ポリラインの選択状態をリセット
-                        for(Polyline tarline : ArrayPolylineSet){
-                                tarline.setColor(Color.BLUE);
+                        for (Polyline tarline : ArrayPolylineSet) {
+                            tarline.setColor(Color.BLUE);
                         }
 
 
                         //ポリラインのタップを検知
-                        for(Polyline tarline : ArrayPolylineSet){
+                        for (Polyline tarline : ArrayPolylineSet) {
                             if (PolyUtil.isLocationOnPath(latLng, tarline.getPoints(), true, 100)) {
-                                tarline.setColor(Color.rgb(255,0,255));
+                                tarline.setColor(Color.rgb(255, 0, 255));
                                 break;
                             }
+                        }
+                    }
+                });
+
+                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        if(touchfrag) {
+                            ObjectAnimator animY1 = ObjectAnimator.ofFloat(tabLayout, "y", tabLayout.getY(), tabLayout.getY() - tabLayout.getWidth() - 10);
+                            animY1.setDuration(300);
+                            animY1.start();
+                            touchfrag = false;
+                        }else{
+                            ObjectAnimator animY1 = ObjectAnimator.ofFloat(tabLayout, "y", tabLayout.getY(), tabLayout.getY() + tabLayout.getWidth() + 10);
+                            animY1.setDuration(300);
+                            animY1.start();
+                            touchfrag = true;
                         }
                     }
                 });

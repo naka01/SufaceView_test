@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.util.Log;
 import android.view.TextureView;
@@ -29,13 +31,12 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
     private int view_h;
 
     //グラフにするデータセット
-    private ArrayList<Float> datasetList;
-    private int datalistcount;
+    private int percentDate = 0;
+    private int percentCalc = 0;
 
-    //軸のスケール設定
-    private float scale_x;
-    private float scale_y;
-    private float max_y;
+    //円の領域、矩形
+    private int leftx,lefty,rad;
+
 
     public CircleGraphView(Context context){
         super(context);
@@ -49,6 +50,17 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
 
         view_h = h;
         view_w = w;
+
+        if(view_h >= view_w){
+            rad = view_w-toppadding-bottompadding;
+            leftx = toppadding;
+            lefty = (view_h-view_w)/2;
+        }else{
+            rad = view_h-toppadding-bottompadding;
+            lefty =toppadding;
+            leftx = (view_w-view_h )/2+ leftpadding;
+        }
+
 
         Log.v("log", String.format("onSurfaceTextureAvailable: %s %s", w, h));
 
@@ -86,10 +98,6 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
         Paint paint = new Paint();
         Paint bgPaint = new Paint();
 
-        Path path = new Path();
-
-        Path pathline = new Path();
-
 
         float phase = 0;
 
@@ -97,16 +105,6 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
         bgPaint.setStyle(Paint.Style.FILL);
         bgPaint.setColor(Color.WHITE);
 
-
-        // 開始位置
-        pathline.moveTo(datasetList.get(0) +  leftpadding
-                , datasetList.get(0) - bottompadding + view_h);
-
-        //x軸のスケールをセット
-        scale_x = (view_w - rightpadding - leftpadding)/(float)datalistcount;
-
-        //y軸のスケールをセット
-        scale_y = view_h/max_y;
 
         //アニメーション用のループ
         while (thread != null) {
@@ -120,61 +118,49 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
                     /**
                      * フレーム描画
                      */
-                    //グラフラインのスタイル
-                    paint.setAntiAlias(true);
-                    paint.setStyle(Paint.Style.STROKE); // スタイルは線(Stroke)を指定する
-                    paint.setStrokeWidth(3); // 線の太さ
-                    paint.setColor(Color.rgb(255, 128, 0)); // 線の色
 
                     //背景の適用
                     canvas.drawPaint(bgPaint);
+                    //座標指定
+                    RectF rect = new RectF(leftx,lefty, leftx + rad, lefty+rad);
 
-                    //軸の描画
-                    path.moveTo(leftpadding, toppadding);
-                    path.rLineTo(0, view_h - toppadding - bottompadding);
-                    path.rLineTo(view_w - rightpadding - leftpadding, 0);
-                    //path.rLineTo(0, -view_h + toppadding + bottompadding);
-                    canvas.drawPath(path, paint);
-                    paint.reset();
-
-                    //ラベルの描画
-                    paint.setAntiAlias(true);
-                    paint.setColor(Color.rgb(255, 128, 0)); // 線の色
-                    paint.setTextSize(25);
-                    float textpos = (paint.getFontMetrics().bottom-paint.getFontMetrics().ascent)/2f;
-                    float textXpos = (paint.measureText("Test1"))/2f;
-                    Log.v("log", String.format("Text h : %s ", textpos));
-
-                    canvas.drawText("Test1",0, toppadding + textpos,paint);
-                    canvas.drawText("Test2",0, (view_h-bottompadding-toppadding)/2 + textpos,paint);
-                    canvas.drawText("Test3",0, view_h-bottompadding-toppadding + textpos,paint);
-                    canvas.drawText("Test4",textXpos, view_h,paint);
-                    canvas.drawText("Test5",(view_w-leftpadding-rightpadding)/2+textXpos, view_h,paint);
-                    canvas.drawText("Test5",view_w-leftpadding-rightpadding+textXpos, view_h,paint);
-
-                    path.reset();
-                    paint.reset();
                     /**
-                     * グラフプロット
+                     * 数字の描画
+                     */
+                    paint.setColor(Color.BLUE);
+                    paint.setTextSize(80);
+                    paint.setTextAlign(Paint.Align.CENTER);
+                    paint.setAntiAlias(true);
+                    float width = rect.width();
+                    String text =   String.format("%s",this.percentDate) + "%";
+                    int numOfChars = paint.breakText(text,true,width,null);
+                    int start = (text.length()-numOfChars)/2;
+                    canvas.drawText(text, start, start + numOfChars, rect.centerX(), rect.centerY(), paint);
+
+                    paint.reset();
+                    
+
+                    /**
+                     * グラフプロット　(Circle)
                      * アニメーション
                      */
                     //グラフラインのスタイル
                     paint.setAntiAlias(true);
                     paint.setStyle(Paint.Style.STROKE); // スタイルは線(Stroke)を指定する
-                    paint.setStrokeWidth(6); // 線の太さ
+                    paint.setStrokeWidth(30); // 線の太さ
                     paint.setColor(Color.rgb(0, 128, 255)); // 線の色
-                    paint.setStrokeCap(Paint.Cap.ROUND);
                     paint.setStrokeJoin(Paint.Join.ROUND);
 
 
-                    pathline.quadTo((float) phase*scale_x +  leftpadding, (float) -datasetList.get((int)phase)*scale_y - bottompadding + view_h
-                            , (float) (phase+1)*scale_x +  leftpadding, (float) -datasetList.get((int)(phase + 1))*scale_y - bottompadding + view_h);
 
-                    phase = phase+1;
+                    //円弧のみ描写
+                    canvas.drawArc(rect, 90,phase,false,paint);
 
-                    canvas.drawPath(pathline, paint);
+                    phase = phase + 1;
 
-                    paint.setPathEffect(null);
+                    paint.reset();
+
+
 
                     this.unlockCanvasAndPost(canvas);
 
@@ -184,9 +170,9 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
                         - (System.currentTimeMillis() - startTime);
 
 
-                if (phase>datalistcount -2 ){
+                if (phase>percentCalc){
+                    Log.v("log", String.format("Last percentDate : %s ", percentDate));
 
-                    Log.v("log", String.format("Last  X : %s ", (phase+1)*scale_x));
                     break;
                 }
 
@@ -205,15 +191,14 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
 
     /**
      * データリストをセット
-     * @param datasetList
+     * 目標までの割合
      */
-    public void setDatasetList(ArrayList<Float> datasetList) {
-        this.datasetList = datasetList;
-        this.datalistcount = datasetList.size();
+    public void setDatasetPer(int perc) {
+        this.percentCalc = (int)(360*((float)perc/100));
+        this.percentDate = perc;
+
     }
 
-    public void setScale_y(float maxy){
-        this.max_y = maxy;
-    }
+
 }
 

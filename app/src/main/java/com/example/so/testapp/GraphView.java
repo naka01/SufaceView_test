@@ -143,7 +143,6 @@ public class GraphView extends TextureView implements TextureView.SurfaceTexture
                     paint.setTextSize(25);
                     float textpos = (paint.getFontMetrics().bottom-paint.getFontMetrics().ascent)/2f;
                     float textXpos = (paint.measureText("Test1"))/2f;
-                    Log.v("log", String.format("Text h : %s ", textpos));
 
                     canvas.drawText("Test1",0, toppadding + textpos,paint);
                     canvas.drawText("Test2",0, (view_h-bottompadding-toppadding)/2 + textpos,paint);
