@@ -1,17 +1,13 @@
-package com.example.so.testapp;
+package jp.chuogeomatics.shinagawawalking.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.util.Log;
 import android.view.TextureView;
-
-import java.util.ArrayList;
 
 public class CircleGraphView extends TextureView implements TextureView.SurfaceTextureListener,Runnable{
 
@@ -72,6 +68,7 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         synchronized (this) {
+
             thread.interrupt();
             thread = null;
         }
@@ -85,6 +82,7 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
     }
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+        Log.v("log", "update");
     }
 
     @Override
@@ -105,6 +103,8 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
         bgPaint.setStyle(Paint.Style.FILL);
         bgPaint.setColor(Color.WHITE);
 
+        //座標指定
+        RectF rect = new RectF(leftx,lefty, leftx + rad, lefty+rad);
 
         //アニメーション用のループ
         while (thread != null) {
@@ -121,8 +121,7 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
 
                     //背景の適用
                     canvas.drawPaint(bgPaint);
-                    //座標指定
-                    RectF rect = new RectF(leftx,lefty, leftx + rad, lefty+rad);
+
 
                     /**
                      * 数字の描画
@@ -138,7 +137,7 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
                     canvas.drawText(text, start, start + numOfChars, rect.centerX(), rect.centerY(), paint);
 
                     paint.reset();
-                    
+
 
                     /**
                      * グラフプロット　(Circle)
@@ -171,7 +170,7 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
 
 
                 if (phase>percentCalc){
-                    Log.v("log", String.format("Last percentDate : %s ", percentDate));
+
 
                     break;
                 }
@@ -187,18 +186,81 @@ public class CircleGraphView extends TextureView implements TextureView.SurfaceT
 
 
         }
+        Log.v("log", String.format("Last percentDate runの実行終了: %s ", percentDate));
     }
+
 
     /**
      * データリストをセット
      * 目標までの割合
+     * tunメソッドを止めた後に変更する
+     *
      */
     public void setDatasetPer(int perc) {
         this.percentCalc = (int)(360*((float)perc/100));
         this.percentDate = perc;
+        Paint paint = new Paint();
+        Paint bgPaint = new Paint();
 
+        Canvas canvas = null;
+
+        // Background
+        bgPaint.setStyle(Paint.Style.FILL);
+        bgPaint.setColor(Color.WHITE);
+
+        synchronized (this) {
+            canvas = this.lockCanvas();
+
+            /**
+             * フレーム描画
+             */
+
+            if(canvas != null) {
+                //背景の適用
+                canvas.drawPaint(bgPaint);
+                //座標指定
+                RectF rect = new RectF(leftx, lefty, leftx + rad, lefty + rad);
+
+                /**
+                 * 数字の描画
+                 */
+                paint.setColor(Color.BLUE);
+                paint.setTextSize(80);
+                paint.setTextAlign(Paint.Align.CENTER);
+                paint.setAntiAlias(true);
+                float width = rect.width();
+                String text = String.format("%s", this.percentDate) + "%";
+                int numOfChars = paint.breakText(text, true, width, null);
+                int start = (text.length() - numOfChars) / 2;
+                canvas.drawText(text, start, start + numOfChars, rect.centerX(), rect.centerY(), paint);
+
+                paint.reset();
+
+
+                /**
+                 * グラフプロット　(Circle)
+                 * アニメーション
+                 */
+                //グラフラインのスタイル
+                paint.setAntiAlias(true);
+                paint.setStyle(Paint.Style.STROKE); // スタイルは線(Stroke)を指定する
+                paint.setStrokeWidth(30); // 線の太さ
+                paint.setColor(Color.rgb(0, 128, 255)); // 線の色
+                paint.setStrokeJoin(Paint.Join.ROUND);
+
+
+                //円弧のみ描写
+                canvas.drawArc(rect, 90, percentCalc, false, paint);
+
+
+                paint.reset();
+
+
+                this.unlockCanvasAndPost(canvas);
+            }
+
+        }
     }
 
 
 }
-
