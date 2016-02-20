@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
 
         Button button = new Button(this);
         button.setId(R.id.layout1);
-        button.setText("texture gra");
+        button.setText("描画テスト");
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(B_wi,B_hi);
         param.setMargins(20, 20, 50, 0);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity {
                 //saveBtnF(getApplicationContext());
                 FragmentTransaction transaction = manager.beginTransaction();
                 Bundle arg = new Bundle();
-                arg.putInt("page",2);
+                arg.putInt("page",3);
                 TextureFragment fragment = new TextureFragment();
                 fragment.setArguments(arg);
                 transaction.add(R.id.fragtar,fragment );

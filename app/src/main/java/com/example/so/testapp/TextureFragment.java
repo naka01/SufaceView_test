@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import com.example.so.testapp.view.DrawRectView;
+
 public class TextureFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -88,10 +90,14 @@ public class TextureFragment extends Fragment {
             textureanim = new TextureAnimation(context);
             textureanim.setOpaque(false);
             frameLayout.addView(textureanim, new ViewGroup.LayoutParams(MP, MP));
-        }else{
+        }else if(page == 2){
             texturegraphic = new TextureGraphic(context);
             texturegraphic.setOpaque(false);
             frameLayout.addView(texturegraphic, new ViewGroup.LayoutParams(MP, MP));
+        }else{
+            DrawRectView drv = new DrawRectView(context);
+            frameLayout.addView(drv, new ViewGroup.LayoutParams(MP, MP));
+
         }
 
         return relativeLayout_main;

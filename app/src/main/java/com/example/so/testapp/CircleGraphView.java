@@ -1,4 +1,4 @@
-package jp.chuogeomatics.shinagawawalking.view;
+package com.example.so.testapp;
 
 import android.content.Context;
 import android.graphics.Canvas;
